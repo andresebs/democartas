@@ -1,12 +1,1051 @@
-<!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DEMO CARTAS · La Casa de la Democracia</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#081923">
+  <meta name="description" content="Democartas: un juego educativo de cartas sobre la Constitución y la democracia colombiana.">
+  <title>Democartas | La mesa de la Constitución</title>
+  
+  
+  
+  
+  
 <style>
-:root{font-family:system-ui,Segoe UI,sans-serif;color:#fff5d9;background:#101c23}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 40%,#244b43,#0e1b24 80%);min-height:100vh}header{padding:14px 24px;background:#101b24d9;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #ffffff25}h1{margin:0;font-family:Georgia,serif;font-size:clamp(23px,3vw,38px);color:#ffdb88}small,.muted{color:#c4d0c7}button,select{cursor:pointer;background:#e6b75e;color:#1c2326;border:0;border-radius:12px;padding:11px 15px;font-weight:800}button:hover{filter:brightness(1.12)}button:disabled{opacity:.45;cursor:not-allowed}main{display:grid;grid-template-columns:minmax(180px,250px) minmax(350px,1fr) minmax(180px,250px);gap:16px;padding:16px;max-width:1600px;margin:auto}.panel{background:#14232cdd;border:1px solid #d8bd7944;border-radius:18px;padding:18px;box-shadow:0 10px 30px #0004}h2{font-size:19px;color:#f3cb77;margin:0 0 14px}p,li{line-height:1.55;font-size:14px}.table{background:radial-gradient(ellipse,#2a775a,#145039);border:9px solid #6a4930;box-shadow:inset 0 0 0 3px #c39c5a,0 14px 35px #0007;border-radius:45% / 23%;min-height:490px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:10px}.players{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;width:100%}.player{background:#0b2928c9;border:1px solid #f8d58a66;border-radius:14px;padding:10px 14px;min-width:112px;text-align:center}.player .avatar{font-size:29px}.player.active{outline:3px solid #ffdc76}.center{display:flex;align-items:center;justify-content:center;gap:24px;min-height:165px}.card{width:94px;height:140px;border-radius:13px;background:#fff8e8;color:#172a30;border:4px solid #e9d6a8;box-shadow:0 8px 18px #0007;display:flex;flex-direction:column;justify-content:space-between;padding:8px;flex-shrink:0;position:relative;transition:transform .15s}.card .symbol{font-size:32px;text-align:center}.card .value{font-weight:900;font-size:25px}.card .name{font-size:10px;font-weight:700;line-height:1.2}.card.red{border-color:#e25e66}.card.blue{border-color:#65b6e7}.card.green{border-color:#68cf9b}.card.gold{border-color:#eac164}.card.back{background:repeating-linear-gradient(45deg,#182d46,#182d46 10px,#315a70 10px,#315a70 20px);border-color:#e7c47b;color:#f7db94;justify-content:center;text-align:center;font-size:28px}.hand{display:flex;gap:7px;overflow-x:auto;max-width:100%;padding:12px 8px;min-height:165px}.hand .card{cursor:pointer;width:85px;height:132px}.hand .card:hover{transform:translateY(-12px)}.hand .card.playable{box-shadow:0 0 0 3px #ffe16a,0 8px 18px #0007}.status{background:#092b29bf;border-radius:12px;padding:12px 18px;text-align:center;font-weight:700}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.log{height:180px;overflow:auto;font-size:12px;line-height:1.7;background:#0a171f;padding:10px;border-radius:10px}.tag{border-radius:99px;padding:3px 9px;background:#ffffff20}.intro{max-width:700px;margin:30px auto;padding:30px;text-align:center}.intro h2{font-size:32px}.hidden{display:none!important}.colorpick{display:flex;gap:8px;justify-content:center}.colorpick button{width:46px;height:46px;border:3px solid white}.colorpick .red{background:#c74750}.colorpick .blue{background:#368ac8}.colorpick .green{background:#369e65}.colorpick .gold{background:#d8a12e}@media(max-width:1000px){main{grid-template-columns:1fr}.table{border-radius:60px;min-height:450px}.panel.side{order:2}}@media(max-width:600px){main{padding:8px;gap:8px}.table{padding:10px;border-width:5px}.card{width:76px;height:116px}.hand .card{width:70px;height:110px}.center{gap:12px}.intro{margin:12px}}
-</style></head><body><header><div><h1>♛ DEMO CARTAS</h1><small>La Casa de la Democracia · Una aventura de decisiones</small></div><button id="restart">↻ Nueva partida</button></header>
-<section id="intro" class="panel intro"><h2>🏛️ El desafío del Consejo</h2><p>La Casa de la Democracia ha abierto sus puertas. Cuatro aspirantes compiten para reunir ideas, debatir principios y ganar el Consejo. Combina cartas por <b>color o número</b>, usa poderes estratégicos y sé la primera persona en quedarte sin cartas.</p><p>Tu aventura comienza con siete cartas. ¿Podrás superar a Atenea, Bruno y Luna?</p><label>Participantes: <select id="count"><option value="2">2 (tú + 1 IA)</option><option value="3">3 (tú + 2 IA)</option><option value="4" selected>4 (tú + 3 IA)</option></select></label><p><button id="start">¡Entrar al Consejo!</button></p></section>
-<main id="game" class="hidden"><aside class="panel side"><h2>📜 Tu misión</h2><p>En la Casa de la Democracia cada carta representa una idea para convivir y tomar decisiones. El objetivo es <b>quedarte sin cartas</b>.</p><h2>🧭 Cómo jugar</h2><p>Juega una carta del mismo <b>color</b>, <b>número</b> o <b>símbolo de acción</b> que la carta central. Los comodines sirven siempre.</p><p>Si no tienes ninguna carta válida, <b>roba una</b> del mazo. Si puedes jugarla, podrás hacerlo; si no, termina tu turno.</p><h2>✨ Cartas especiales</h2><p>⛔ Salta: pierde turno el siguiente. 🔁 Giro: invierte el orden. +2: siguiente roba dos y pierde turno. 🌈 Comodín: eliges color. +4: eliges color y el siguiente roba cuatro y pierde turno.</p></aside>
-<section><div class="table"><div id="opponents" class="players"></div><div class="center"><div id="deck" class="card back" title="Mazo">♛<br>DEMO</div><div id="discard"></div></div><div class="status" id="status">Preparando la partida…</div><div class="actions"><button id="draw">🃏 Robar carta</button><button id="pass">⏭ Terminar turno</button></div></div><div class="panel" style="margin-top:14px"><h2>🖐️ Tu mano <span id="handcount" class="tag"></span></h2><div id="hand" class="hand"></div><div id="colors" class="hidden"><p>Elige el nuevo color:</p><div class="colorpick"><button class="red" data-color="red" aria-label="Rojo"></button><button class="blue" data-color="blue" aria-label="Azul"></button><button class="green" data-color="green" aria-label="Verde"></button><button class="gold" data-color="gold" aria-label="Dorado"></button></div></div></div></section>
-<aside class="panel side"><h2>👑 Los aspirantes</h2><p>🦉 <b>Atenea</b> · Estratega del diálogo, anticipa las jugadas.</p><p>🦊 <b>Bruno</b> · Defensor de la justicia, juega con audacia.</p><p>🌙 <b>Luna</b> · Guardiana de la convivencia, espera el momento ideal.</p><h2>📢 Crónica del Consejo</h2><div id="log" class="log" aria-live="polite"></div><p class="muted">Juego educativo inspirado en mecánicas de descarte. No es una simulación electoral ni una clase de derecho.</p></aside></main>
-<script>
-(()=>{'use strict';const $=id=>document.getElementById(id),colors=['red','blue','green','gold'],names={red:'Rojo',blue:'Azul',green:'Verde',gold:'Dorado'},icons={red:'❤️',blue:'💧',green:'🌿',gold:'☀️'},topics=['Participación','Igualdad','Diálogo','Respeto','Libertad','Solidaridad','Diversidad','Justicia','Cooperación','Convivencia'];let deck=[],pile=[],players=[],turn=0,dir=1,activeColor='red',drawn=false,locked=false,finished=false,pending=null,token=0;const rand=n=>Math.floor(Math.random()*n);function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}function makeDeck(){let a=[];for(const c of colors){for(let n=0;n<=9;n++)for(let k=0;k<(n===0?1:2);k++)a.push({color:c,type:'number',value:n});for(const type of ['skip','reverse','draw2'])for(let k=0;k<2;k++)a.push({color:c,type,value:type})}for(let k=0;k<4;k++){a.push({color:'wild',type:'wild',value:'wild'});a.push({color:'wild',type:'draw4',value:'draw4'})}return shuffle(a)}function label(c){return c.type==='number'?topics[c.value]:({skip:'Pausa del debate',reverse:'Cambio de rumbo',draw2:'Dos propuestas',wild:'Consenso',draw4:'Gran decisión'})[c.type]}function sym(c){return c.type==='number'?icons[c.color]:({skip:'⛔',reverse:'🔁',draw2:'+2',wild:'🌈',draw4:'+4'})[c.type]}function cardEl(c,clickable=false){let e=document.createElement('div');e.className='card '+(c.color==='wild'?'gold':c.color);e.innerHTML='<div class="value">'+(c.type==='number'?c.value:sym(c))+'</div><div class="symbol">'+(c.type==='number'?icons[c.color]:sym(c))+'</div><div class="name">'+label(c)+'</div>';if(clickable){if(valid(c)&&turn===0&&!locked&&!finished)e.classList.add('playable');e.addEventListener('click',()=>play(0,players[0].hand.indexOf(c)))}return e}function log(s){let d=document.createElement('div');d.textContent='• '+s;$('log').prepend(d)}function refill(){if(deck.length)return;if(pile.length<=1)return;let top=pile.pop();deck=shuffle(pile);pile=[top];log('Se barajó de nuevo el mazo.')}function take(p,n=1){for(let i=0;i<n;i++){refill();if(deck.length)p.hand.push(deck.pop())}}function valid(c){let t=pile[pile.length-1];return c.color==='wild'||c.color===activeColor||(c.type===t.type&&(c.type!=='number'||c.value===t.value))}function next(steps=1){turn=(turn+dir*steps%players.length+players.length*3)%players.length;drawn=false;render();if(turn!==0&&!finished){let stamp=token;setTimeout(()=>{if(stamp===token)ai()},750)}}function render(){if(!players.length)return;$('opponents').innerHTML='';players.slice(1).forEach((p,i)=>{let d=document.createElement('div');d.className='player'+(turn===i+1?' active':'');d.innerHTML='<div class="avatar">'+p.avatar+'</div><b>'+p.name+'</b><div>🃏 '+p.hand.length+' cartas</div>';$('opponents').append(d)});$('discard').innerHTML='';$('discard').append(cardEl(pile[pile.length-1]));$('hand').innerHTML='';players[0].hand.forEach(c=>$('hand').append(cardEl(c,true)));$('handcount').textContent=players[0].hand.length;$('status').textContent=finished?'🏆 Fin de la partida':(turn===0?'🎯 Tu turno':'🤖 Turno de '+players[turn].name)+' · Color: '+names[activeColor];$('draw').disabled=turn!==0||locked||finished||drawn;$('pass').disabled=turn!==0||locked||finished||!drawn;$('colors').classList.toggle('hidden',!pending)}function finish(p){finished=true;locked=true;log('🏆 '+p.name+' ganó el Consejo. ¡Partida terminada!');$('status').textContent='🏆 '+p.name+' ganó el Consejo';render()}function chooseColor(p){let counts=colors.map(c=>p.hand.filter(x=>x.color===c).length);return colors[counts.indexOf(Math.max(...counts))]}function play(who,index){if(finished||locked||turn!==who)return;let p=players[who],c=p.hand[index];if(!c||!valid(c))return;p.hand.splice(index,1);pile.push(c);log(p.name+' jugó '+label(c)+(c.color==='wild'?'':(' ('+names[c.color]+')')));if(c.color!=='wild')activeColor=c.color;if(p.hand.length===0){finish(p);return}if(c.color==='wild'&&who===0){pending=c;locked=true;render();return}resolve(c,who)}function resolve(c,who){if(c.color==='wild')activeColor=chooseColor(players[who]);let steps=1;if(c.type==='reverse'){dir*=-1;if(players.length===2)steps=2}if(c.type==='skip')steps=2;if(c.type==='draw2'||c.type==='draw4'){let target=(turn+dir+players.length)%players.length;let n=c.type==='draw2'?2:4;take(players[target],n);log(players[target].name+' robó '+n+' cartas y pierde el turno');steps=2}next(steps)}function ai(){if(finished||turn===0||locked)return;let p=players[turn],opts=p.hand.map((c,i)=>({c,i})).filter(x=>valid(x.c));if(!opts.length){take(p);log(p.name+' robó una carta');opts=p.hand.map((c,i)=>({c,i})).filter(x=>valid(x.c));if(!opts.length){next();return}}opts.sort((a,b)=>(a.c.color==='wild'?1:0)-(b.c.color==='wild'?1:0));play(turn,opts[0].i)}function start(){token++;deck=makeDeck();pile=[];players=[{name:'Tú',avatar:'🧑‍🎓',hand:[]},{name:'Atenea',avatar:'🦉',hand:[]},{name:'Bruno',avatar:'🦊',hand:[]},{name:'Luna',avatar:'🌙',hand:[]}].slice(0,Number($('count').value));players.forEach(p=>take(p,7));let first=deck.findIndex(c=>c.type==='number');pile.push(deck.splice(first,1)[0]);activeColor=pile[0].color;turn=0;dir=1;drawn=false;locked=false;finished=false;pending=null;$('log').innerHTML='';$('intro').classList.add('hidden');$('game').classList.remove('hidden');log('El Consejo comienza. ¡Que gane la mejor estrategia!');render()}$('start').onclick=start;$('restart').onclick=()=>{token++;$('intro').classList.remove('hidden');$('game').classList.add('hidden')};$('draw').onclick=()=>{if(turn!==0||drawn||locked||finished)return;take(players[0]);drawn=true;log('Robaste una carta');render()};$('pass').onclick=()=>{if(turn===0&&drawn&&!locked&&!finished){log('Terminaste tu turno');next()}};document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{if(!pending)return;let c=pending;pending=null;activeColor=b.dataset.color;locked=false;log('Elegiste '+names[activeColor]);resolve(c,0)});})();
-</script></body></html>
+:root{
+  --bg:#07141a;--bg2:#0d1f27;--panel:#0b1c24;--panel2:#102630;--line:rgba(204,239,226,.12);--muted:#8da6a9;--text:#f3f3e8;
+  --gold:#e6b86b;--mint:#8fe9c4;--accent:#39d9b9;--shadow:0 20px 48px rgba(0,0,0,.28);
+  --font:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--heading:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;background:radial-gradient(circle at top,#16313d 0,#0b1820 35%,#07141a 100%);color:var(--text);font-family:var(--font)}
+a{color:var(--mint)}
+button{font:inherit}
+.hidden{display:none!important}
+.app-shell{padding:18px;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#102731,#17404b);border:1px solid rgba(255,255,255,.1);font-size:24px;color:var(--gold);box-shadow:var(--shadow)}
+.brand-kicker,.eyebrow,.section-index,.start-foot,.zone-caption,.deck-label,.sources-note,.bot-title span,.footer-hint,.rule-number{letter-spacing:.11em;text-transform:uppercase;font-size:11px}
+h1,h2,h3,strong{font-family:var(--heading);margin:0}
+h1{font-size:32px;line-height:1} h1 span{color:var(--gold)}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.edition-pill,.soft-button,.icon-button,.story-badge{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text);border-radius:999px}
+.edition-pill{padding:10px 14px;font-weight:700;font-size:12px}
+.icon-button{width:42px;height:42px;display:grid;place-items:center;font-size:18px;cursor:pointer}
+.soft-button{padding:10px 14px;font-weight:700;cursor:pointer}
+.layout{display:grid;grid-template-columns:minmax(250px,300px) minmax(0,1fr) minmax(260px,320px);gap:16px;align-items:start}
+.sidebar{display:flex;flex-direction:column;gap:14px}
+.side-panel{background:linear-gradient(180deg,rgba(19,43,52,.96),rgba(11,28,36,.95));border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.side-heading{display:flex;justify-content:space-between;align-items:center;color:var(--muted);margin-bottom:10px}
+.side-panel h2{font-size:24px;margin-bottom:10px}.side-panel h3{font-size:18px;margin-bottom:10px}.side-panel p,.relation-info,.guide-list li,.sources-note,.civic-fact p,.event-log{font-size:14px;line-height:1.45;color:#d8e7de}
+.story-badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.story-badge{padding:8px 10px;font-size:12px}
+.guide-list{padding-left:20px;margin:8px 0 0}.guide-list li+li{margin-top:8px}
+.shortcut-row,.mini-legend,.family-legend,.progress-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.shortcut-row span,.mini-legend span,.family-legend span{padding:8px 10px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.04);font-size:12px}
+.kbd, kbd{padding:2px 6px;border-radius:7px;background:#051118;border:1px solid rgba(255,255,255,.09)}
+.progress-stats div{flex:1 1 30%;min-width:70px;padding:12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.progress-stats span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}.progress-stats strong{font-size:22px}
+.family-legend span,.mini-legend span{display:flex;align-items:center;gap:8px}.family-legend i{display:inline-block;width:10px;height:10px;border-radius:999px}
+.arena{position:relative;overflow:hidden;min-height:860px;background:linear-gradient(180deg,#0b1920 0,#0d2631 34%,#0b1b24 100%);border-radius:34px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);padding:28px 24px 20px}
+.arena-dots{position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.08) 1px,transparent 0);background-size:22px 22px;opacity:.23;pointer-events:none}
+.room-light{position:absolute;top:-80px;width:220px;height:220px;border-radius:50%;filter:blur(24px);opacity:.35;pointer-events:none}.room-light-left{left:6%;background:#4ecfbb}.room-light-right{right:8%;background:#ffc26c}
+.wall-symbol,.room-label,.room-subtitle{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}.wall-symbol{top:34px;font-size:60px;opacity:.08}.room-label{top:36px;font-size:12px;letter-spacing:.36em;color:#b4c3bf}.room-subtitle{top:58px;font-size:11px;letter-spacing:.18em;color:#7fa299;text-transform:uppercase}
+.opponents{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:80px;min-height:160px}
+.bot-seat{padding:16px 14px 14px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;backdrop-filter:blur(10px);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;min-height:110px}
+.bot-seat.active{border-color:rgba(143,233,196,.75);box-shadow:0 0 0 1px rgba(143,233,196,.25),0 12px 30px rgba(57,217,185,.18);transform:translateY(-4px)}
+.bot-portrait{width:62px;height:62px;border-radius:22px;display:grid;place-items:center;font-size:33px;background:linear-gradient(145deg,#17313d,#244558);border:1px solid rgba(255,255,255,.12)}
+.bot-title{font-weight:800;font-family:var(--heading);font-size:20px;line-height:1}.bot-title span{display:block;color:var(--muted);margin-top:5px}
+.bot-count{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-weight:800}
+.bot-cards{grid-column:1/-1;display:flex;justify-content:center;gap:2px;height:40px;align-items:flex-end}
+.bot-card-back{width:24px;height:36px;border-radius:8px;background:linear-gradient(180deg,#2a4050,#10212a);border:1px solid rgba(255,255,255,.08);transform:rotate(var(--r));transform-origin:bottom center;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.table-surface{position:relative;z-index:1;margin:26px auto 0;width:min(780px,95%);height:350px;border-radius:56% 56% 46% 46% / 58% 58% 40% 40%;background:radial-gradient(circle at 50% 40%,#244c57 0,#12303b 35%,#0d2128 75%,#09181e 100%);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 2px rgba(255,255,255,.03),inset 0 20px 40px rgba(255,255,255,.03),0 24px 50px rgba(0,0,0,.3)}
+.table-ornament{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:76%;text-align:center;color:rgba(255,255,255,.15);font-weight:800;letter-spacing:.32em;font-size:12px}
+.table-play{position:relative;z-index:3;display:grid;grid-template-columns:180px 1fr 200px;gap:18px;margin-top:-260px;align-items:center}
+.deck-zone,.played-zone,.tip-zone{display:flex;flex-direction:column;align-items:center;gap:10px}
+.deck-button,.playing-card,.hero-card{border:none}
+.deck-button{position:relative;width:136px;height:192px;border-radius:24px;cursor:pointer;background:linear-gradient(180deg,#15303c,#0d2028);border:1px solid rgba(255,255,255,.08);box-shadow:0 12px 22px rgba(0,0,0,.26);color:#f6efd8;display:grid;place-items:center;transition:transform .18s ease,box-shadow .18s ease}
+.deck-button.available{animation:pulse 1.4s infinite}.deck-button:disabled{opacity:.68;cursor:not-allowed}.deck-button:not(:disabled):hover{transform:translateY(-2px)}
+.back-emblem{font-size:34px;color:var(--gold)}.back-word{position:absolute;bottom:20px;font-weight:900;letter-spacing:.22em}.deck-size{position:absolute;top:12px;right:12px;min-width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.09);font-weight:800}
+.played-stack{min-height:212px;display:flex;justify-content:center;align-items:center}.tip-zone{align-items:flex-start;justify-content:center;padding:16px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);max-width:200px}.tip-glyph{font-size:28px;color:var(--gold)}
+.playing-card{position:relative;width:150px;height:216px;border-radius:24px;padding:14px;background:linear-gradient(180deg,#fffef8,#eee8d8);color:#07141a;border:1px solid rgba(0,0,0,.12);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 16px 28px rgba(0,0,0,.24);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,opacity .18s ease}
+.playing-card::before{content:"";position:absolute;inset:0;border-radius:24px;box-shadow:inset 0 0 0 3px var(--card-accent, #39d9b9)}
+.card-corner{display:flex;justify-content:space-between;align-items:flex-start;font-weight:800;font-size:18px}.card-ref{font-size:11px;color:#47595f;max-width:68px;text-align:right;line-height:1.15}
+.card-icon{display:grid;place-items:center;font-size:42px;color:var(--card-accent);margin-top:4px}
+.card-bottom{display:flex;flex-direction:column;gap:8px}.card-family{font-size:11px;letter-spacing:.13em;color:#435a5f;font-weight:800}.card-name{font-family:var(--heading);font-size:20px;font-weight:800;line-height:1.04}.card-tags{display:flex;flex-wrap:wrap;gap:6px}.card-tags span,.match-token{border-radius:999px;padding:5px 8px;background:rgba(0,0,0,.06);font-size:11px;font-weight:700}
+.player-area{position:relative;z-index:4;margin-top:26px;padding:16px 16px 12px;border-radius:28px;background:linear-gradient(180deg,rgba(10,26,34,.94),rgba(7,18,24,.96));border:1px solid rgba(255,255,255,.08)}
+.your-turn-label{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}.avatar-dot{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:16px;background:linear-gradient(145deg,#1c4852,#0e222a);font-weight:900;color:var(--mint)}
+.hand-counter{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.06);font-weight:700}
+.hand-scroll{overflow-x:auto;padding-bottom:8px}.player-hand{display:flex;align-items:flex-end;justify-content:center;gap:0;min-height:260px;padding:8px 24px 4px}
+.player-hand .playing-card{margin-left:-28px;transform:translateY(var(--fanY,0)) rotate(var(--fanR,0deg));transform-origin:center 140%;cursor:pointer}
+.player-hand .playing-card:first-child{margin-left:0}.player-hand .playing-card:hover,.player-hand .playing-card:focus-visible{transform:translateY(calc(var(--fanY,0) - 12px)) rotate(var(--fanR,0deg));z-index:999!important;outline:none}
+.player-hand .playing-card.can-play{box-shadow:0 16px 28px rgba(0,0,0,.24),0 0 0 2px rgba(57,217,185,.24),0 0 18px rgba(57,217,185,.3)}
+.player-hand .playing-card.cannot-play,.player-hand .playing-card.inactive{filter:grayscale(.12);opacity:.76}
+.player-hand .playing-card:disabled{cursor:not-allowed}.player-hand .playing-card.dialogue-allowed{box-shadow:0 0 0 2px rgba(230,184,107,.35),0 0 20px rgba(230,184,107,.3),0 16px 28px rgba(0,0,0,.24)}
+.footer-hint{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);margin-top:6px}.game-status{color:#dce8df}
+.turn-toast{position:absolute;left:50%;top:104px;transform:translateX(-50%) translateY(-10px);padding:10px 14px;border-radius:999px;background:rgba(6,15,19,.88);border:1px solid rgba(255,255,255,.11);opacity:0;pointer-events:none;transition:all .22s ease;z-index:9}.turn-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--mint);display:inline-block;box-shadow:0 0 10px rgba(143,233,196,.7)}
+.event-log{display:flex;flex-direction:column;gap:10px;max-height:320px;overflow:auto}.log-entry{padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}.log-entry.new{border-color:rgba(143,233,196,.3)}
+.civic-fact{margin-top:10px;padding:10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}.civic-fact span{display:block;margin-bottom:6px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.sources-note{padding:0 10px;color:var(--muted)} .sources-note button{background:none;border:none;color:var(--mint);cursor:pointer;padding:0}
+.overlay{position:fixed;inset:0;background:rgba(2,8,12,.76);display:grid;place-items:center;padding:18px;z-index:40}.modal{width:min(860px,100%);max-height:min(92vh,980px);overflow:auto;background:linear-gradient(180deg,#102630,#0d1f27);border:1px solid rgba(255,255,255,.1);border-radius:32px;box-shadow:0 32px 80px rgba(0,0,0,.4);padding:26px}.start-modal{max-width:900px}.modal-seal{text-align:center;color:var(--gold);letter-spacing:.22em;font-size:12px;margin-bottom:12px}.hero-card-display{display:flex;justify-content:center;align-items:center;gap:14px;margin:18px 0}.hero-card{width:96px;height:140px;border-radius:26px;background:linear-gradient(180deg,#f7f2e7,#ede5d0);color:#0a1a22;display:grid;place-items:center;font-size:40px;box-shadow:0 18px 30px rgba(0,0,0,.25)}.hc-center{transform:translateY(-6px) scale(1.05);position:relative}.hc-center small{position:absolute;bottom:18px;font-size:10px;letter-spacing:.18em}
+.story-lead{font-size:17px;line-height:1.55;color:#dbe8df;margin:10px 0 18px}.story-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}.story-columns>div{padding:16px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.setup-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 16px}.seg-buttons{display:flex;gap:10px}.seg-buttons button{min-width:56px;padding:12px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);font-weight:800;cursor:pointer}.seg-buttons .selected{background:linear-gradient(180deg,#234950,#15353d);border-color:rgba(143,233,196,.36)}
+.primary-button{padding:14px 18px;border-radius:999px;border:0;background:linear-gradient(180deg,#f0c277,#db9c39);color:#08141a;font-weight:900;cursor:pointer;box-shadow:0 12px 22px rgba(222,163,77,.25)}
+.info-modal,.end-modal{text-align:left;max-width:860px}.end-modal{text-align:center;max-width:520px}.victory-spark{font-size:44px;color:var(--gold);margin-bottom:8px}.modal-close{position:sticky;float:right;top:6px;border:none;background:rgba(255,255,255,.08);color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.rules-grid>div,.rule-example,.source-list{padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}.rule-number{display:inline-block;color:var(--gold);margin-bottom:8px}.rule-example span{display:inline-block;margin-bottom:8px;color:var(--gold);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.legal-note{color:#b9cbc6;font-size:13px;line-height:1.5}.source-list{padding-left:28px}
+.end-summary{margin:16px auto 20px;padding:14px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:18px;max-width:90%}
+@keyframes pulse{0%,100%{box-shadow:0 12px 22px rgba(0,0,0,.26),0 0 0 0 rgba(143,233,196,.18)}50%{box-shadow:0 12px 22px rgba(0,0,0,.26),0 0 0 10px rgba(143,233,196,0)}}
+@media (max-width:1260px){.layout{grid-template-columns:280px minmax(0,1fr)}.sidebar-right{grid-column:1/-1;order:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.sidebar-right .sources-note{grid-column:1/-1}.arena{min-height:900px}}
+@media (max-width:980px){.layout{grid-template-columns:1fr}.sidebar-right,.sidebar-left{display:flex;grid-template-columns:none}.arena{min-height:unset}.opponents{grid-template-columns:1fr;min-height:auto}.table-surface{height:290px}.table-play{grid-template-columns:1fr;gap:12px;margin-top:-230px}.tip-zone{max-width:none;align-items:center;text-align:center}.player-hand{justify-content:flex-start;padding-left:18px}.story-columns,.rules-grid{grid-template-columns:1fr}}
+@media (max-width:640px){.app-shell{padding:12px}.topbar{gap:12px}.brand-mark{width:46px;height:46px}.arena{padding:18px 14px 16px;border-radius:26px}.wall-symbol{font-size:44px}.room-label{top:28px}.room-subtitle{top:48px;font-size:10px}.opponents{margin-top:70px;gap:10px}.bot-seat{grid-template-columns:auto 1fr auto;padding:12px;border-radius:18px}.bot-portrait{width:52px;height:52px;font-size:28px;border-radius:18px}.bot-title{font-size:17px}.table-surface{width:100%;height:220px;margin-top:20px}.table-play{margin-top:-180px}.deck-button,.playing-card{width:124px;height:178px;border-radius:20px}.card-name{font-size:17px}.player-area{margin-top:14px;padding:12px}.player-hand{min-height:220px}.player-hand .playing-card{margin-left:-56px}.your-turn-label{align-items:flex-start}.footer-hint{font-size:11px}.side-panel{padding:15px;border-radius:20px}.modal{padding:18px;border-radius:24px}.hero-card{width:80px;height:118px}.turn-toast{top:90px;max-width:90%;text-align:center}}
+
+/* VERSIÓN CINEMÁTICA — La mesa vista desde el jugador. Inspirada por la composición de la imagen de referencia. */
+:root{--gold:#f2cb87;--accent:#5cf0cd;--mint:#b3fbd4;--bg:#070d13;--panel:#121a20;--panel2:#172128;--line:rgba(245,207,143,.18)}
+html,body{background:radial-gradient(circle at 53% 0,#24252b 0,#0d151c 51%,#080d12 100%)}
+.app-shell{padding:13px 16px 22px;max-width:2000px;margin:auto}
+.topbar{margin-bottom:10px;min-height:58px}.brand-mark{background:radial-gradient(circle,#705636,#251c22);color:#ffdf9e;border:1px solid #d4ad65}.brand-kicker{color:#ad9b8f;font-size:10px;letter-spacing:.16em}.brand h1{font-size:27px;letter-spacing:.04em}.edition-pill{background:rgba(72,47,35,.5);border-color:rgba(240,189,115,.25);color:#f4dbb4}
+.layout{grid-template-columns:clamp(230px,17vw,300px) minmax(0,1fr) clamp(240px,17.5vw,315px);gap:11px}
+.side-panel{background:linear-gradient(130deg,rgba(28,32,37,.96),rgba(14,22,29,.97));border-color:rgba(231,189,119,.14);border-radius:17px;box-shadow:0 8px 25px #0003;padding:14px}
+.side-panel h2{font-size:21px}.side-panel h3{font-size:16px}.side-panel p,.relation-info,.guide-list li,.event-log{font-size:12.5px;line-height:1.48}.side-heading{margin-bottom:8px}.side-heading,.section-index{color:#d4ae78;font-size:10px}
+.story-badge{padding:6px 8px;border-color:#e0b8792a;background:#201e21;font-size:10px}
+.guide-list{padding-left:17px}.guide-list li+li{margin-top:6px}
+.shortcut-row span,.mini-legend span,.family-legend span{font-size:10px;padding:6px 8px;border-color:#e7bc6f2a}
+.progress-stats{gap:5px}.progress-stats div{padding:9px;min-width:58px}.progress-stats strong{font-size:20px}
+.arena{height:min(790px,calc(100vh - 95px));min-height:690px;overflow:hidden;padding:0;isolation:isolate;border:1px solid #674638;border-radius:20px;background:
+ linear-gradient(0deg,rgba(2,10,13,.26),transparent 37%),
+ radial-gradient(circle at 48% 36%,rgba(194,117,85,.2),transparent 43%),
+ linear-gradient(115deg,#1a2a32 0,#151e25 31%,#292b2d 52%,#151d25 81%,#1e282b 100%);box-shadow:0 16px 56px rgba(0,0,0,.44)}
+.arena::before{content:"";position:absolute;z-index:0;inset:0 0 38%;background:
+ repeating-linear-gradient(90deg,transparent 0,transparent 15.7%,rgba(0,0,0,.26) 16%,rgba(0,0,0,.26) 16.3%,transparent 17%),
+ repeating-linear-gradient(0deg,transparent 0,transparent 115px,rgba(0,0,0,.18) 117px,rgba(214,149,78,.045) 120px),
+ radial-gradient(circle at 49% 10%,#5a3a3b55,transparent 55%);pointer-events:none}
+.arena::after{content:"";position:absolute;z-index:0;left:0;right:0;top:0;height:80%;background:radial-gradient(circle at 50% 75%,transparent 0,transparent 40%,#02070d75 100%);pointer-events:none}
+.arena-dots{display:none}.room-light{width:350px;height:380px;top:-30px;filter:blur(49px);opacity:.15}.room-light-left{background:#ffb66b}.room-light-right{background:#4ba7ac}
+.wall-symbol{top:28px;left:50%;font-size:50px;opacity:.08}.room-label{top:15px;font-size:10px;letter-spacing:.24em;text-shadow:0 2px 12px black;color:#d0b59c}.room-subtitle{top:32px;font-size:8px;color:#bd9f8f;letter-spacing:.2em}
+.lounge-sign{position:absolute;z-index:1;top:116px;left:23px;font-size:23px;font-family:var(--heading);font-weight:800;letter-spacing:.10em;color:#51e1e5;text-shadow:0 0 4px #51e1e5,0 0 16px #19c1d2,0 0 32px #17a0af;transform:rotate(-5deg);opacity:.78}.lounge-sign span{font-size:10px;display:block;letter-spacing:.58em;margin-left:37px;margin-top:-2px;color:#d9faf1}
+.hanging-lamp{position:absolute;z-index:1;top:-30px;left:49%;width:3px;height:80px;background:linear-gradient(90deg,#353638,#a07b62,#393639)}.hanging-lamp i{display:block;position:absolute;top:80px;left:-40px;width:85px;height:24px;border-radius:5px 5px 65% 65%;background:linear-gradient(180deg,#4d4846,#171c24);box-shadow:0 7px 45px 17px rgba(237,156,110,.22)}.hanging-lamp i:after{content:"";position:absolute;top:18px;left:15px;width:55px;height:10px;border-radius:50%;background:#dfae78;filter:blur(5px)}
+.backroom-furniture{position:absolute;z-index:1;top:103px;right:4%;width:140px;height:135px;border-radius:4px;background:linear-gradient(135deg,#1c1c21,#0e161a);box-shadow:0 0 0 8px #231e20,inset 0 0 28px #000}
+.shelf{position:absolute;inset:18px 12px;background:linear-gradient(transparent 0 50%,#4d3030 50% 54%,transparent 54%)}.shelf i{display:inline-block;height:43px;width:13px;vertical-align:top;margin:1px 3px;background:linear-gradient(90deg,#35232c,#675052,#292025);box-shadow:2px 2px 2px #000}
+.opponents{position:absolute;z-index:5;top:53px;left:0;right:0;min-height:370px;display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:0;margin:0;align-items:end;pointer-events:none;padding:0 10px}
+.bot-seat{position:relative;display:flex;flex-direction:column;justify-content:end;align-items:center;background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none;min-height:0;padding:0;gap:0;transform:none!important}
+.bot-seat:nth-child(1){grid-column:2;grid-row:1;z-index:3}
+.bot-seat:nth-child(2){grid-column:1;grid-row:1;z-index:2}
+.bot-seat:nth-child(3){grid-column:3;grid-row:1;z-index:2}
+.bot-character{width:min(100%,365px);height:320px;display:flex;justify-content:center;align-items:flex-end;position:relative;filter:drop-shadow(0 16px 12px #0006)}
+.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{width:240px;height:254px;filter:brightness(.78) drop-shadow(0 14px 12px #0009)}
+.avatar-svg{max-width:100%;max-height:100%;width:100%;height:100%;overflow:visible;animation:idle-breathe 3.8s ease-in-out infinite;transform-origin:50% 90%}
+.bot-seat:nth-child(2) .avatar-svg{animation-delay:-1s;transform:rotate(-4deg)}
+.bot-seat:nth-child(3) .avatar-svg{animation-delay:-1.9s;transform:rotate(4deg)}
+.bot-seat.active .avatar-svg{filter:drop-shadow(0 0 18px #ffe0a04d);animation-duration:2.5s}
+.bot-title{position:absolute;z-index:6;top:auto;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;align-items:center;white-space:nowrap;padding:6px 11px;border-radius:999px;background:#101820dc;border:1px solid #f1d49a66;font-size:11px;box-shadow:0 4px 12px #0006}
+.bot-title span{font-size:8px;margin:0 0 0 4px;color:#ecd7af}.bot-count{position:absolute;top:38%;left:65%;z-index:7;width:28px;height:28px;background:#141b20d8;border:1px solid #f5d7978c;font-size:12px}.bot-cards{display:none}
+.bot-seat.thinking .bot-character:before{content:"PENSANDO...";position:absolute;z-index:8;top:48px;right:-20px;background:#1c2026de;color:#dff3ea;border:1px solid #d5b77a;font-size:9px;padding:6px 9px;border-radius:100px}
+.bot-seat:nth-child(2) .bot-title,.bot-seat:nth-child(3) .bot-title{bottom:8px}
+.table-rim{position:absolute;left:-19%;width:138%;height:47%;top:45%;z-index:6;border-radius:50% 50% 18% 18% / 24% 24% 9% 9%;background:linear-gradient(180deg,#6a3735 0,#bc7a58 6%,#58352f 15%,transparent 16%);box-shadow:0 -11px 35px #080a0a85;pointer-events:none;transform:perspective(950px) rotateX(27deg)}
+.table-surface{position:absolute;z-index:7;left:-13%;top:46%;height:62%;width:126%;max-width:none;margin:0;border:10px solid #703e36;border-radius:51% 51% 18% 18% / 27% 27% 8% 8%;background:
+ radial-gradient(ellipse at 50% 29%,rgba(242,185,134,.20),transparent 68%),
+ repeating-linear-gradient(0deg,transparent 0,transparent 55px,rgba(71,35,29,.14) 56px),
+ linear-gradient(140deg,#734543 0,#9e5d4d 43%,#835044 67%,#623735 100%);
+ transform:perspective(900px) rotateX(29deg);box-shadow:inset 0 10px 22px #3a201f80,inset 0 0 45px #e7b58127,0 -5px 0 #cf9579,0 22px 55px #02060988}
+.table-surface:before{content:"";position:absolute;inset:6%;border:2px solid #eeb9a929;border-radius:50% 50% 18% 18% / 24% 24% 8% 8%}
+.table-ornament{top:51%;letter-spacing:.21em;color:#f9d0b34a;font-size:11px;width:80%;font-weight:700;white-space:nowrap}
+.table-play{position:absolute;top:48%;left:9%;right:9%;margin:0;z-index:11;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;align-items:center}
+.deck-zone,.played-zone{gap:6px}.zone-caption{font-size:10px;letter-spacing:.14em;color:#fbe0c2;text-shadow:0 2px 5px #1f1110}
+.deck-button,.played-stack .playing-card{width:108px;height:160px;border-radius:9px}
+.deck-button{border:3px solid #ead09f;background:radial-gradient(circle at 50% 50%,#8e6438 0,#272d2b 40%,#101b1e 100%);box-shadow:0 0 0 3px #1a2b26,0 12px 22px #24101488}
+.deck-button:before{content:"";position:absolute;inset:7px;border:1px dashed #c7a870;border-radius:5px}
+.deck-button .back-emblem{font-size:51px;color:#eec47e;text-shadow:0 0 18px #ffc88080}.deck-button .back-word{font-size:8px;bottom:19px;color:#f0d5a6;letter-spacing:.19em}.deck-size{font-size:11px;top:7px;right:7px;min-width:27px;height:27px;border-radius:50%;background:#121c1cdd}
+.deck-label{color:#f3d7b6;font-size:9px;text-align:center;max-width:160px}
+.tip-zone{max-width:162px;align-items:flex-start;text-align:left;background:linear-gradient(130deg,#161f20c9,#402e2b9e);border:1px solid #ecc39348;backdrop-filter:blur(3px);padding:12px;border-radius:12px;gap:5px;box-shadow:0 8px 20px #2c17186c}
+.tip-zone strong{font-size:13px;color:#ffdfac}.tip-zone p{font-size:11px;line-height:1.4;color:#f1dfc8;margin:4px 0}.tip-glyph{font-size:21px}
+.player-area{position:absolute;left:0;right:0;bottom:0;z-index:20;border:none;border-top:2px solid #a56c5988;background:linear-gradient(180deg,rgba(34,24,24,.06) 0,rgba(16,22,25,.75) 33%,#0c141c 94%);border-radius:0;margin:0;padding:10px 22px 6px;box-shadow:0 -13px 36px #22120e26}
+.your-turn-label{margin-bottom:0;position:relative;z-index:25}.your-turn-label strong{font-size:16px;color:#f3dcc0}.your-turn-label small{font-size:12px;color:#cedbd2;display:block;margin-top:3px}.avatar-dot{background:linear-gradient(140deg,#78533e,#372b29);color:#f9d6a3;border:1px solid #d5aa6b75;font-size:11px;width:42px;height:42px}.hand-counter{padding:7px 12px;background:#130e12ad;border:1px solid #dcb88745;color:#ffe4b3;font-size:12px}
+.hand-scroll{overflow-x:auto;overflow-y:visible;padding:0 0 12px;position:relative;z-index:21;scrollbar-width:thin;scrollbar-color:#a87b5a transparent}
+.player-hand{display:flex;align-items:flex-end;justify-content:center;min-height:208px;max-width:900px;margin:0 auto;padding:10px 16px 0;isolation:isolate;overflow:visible}
+/* Tarot-cards are dark emerald, gold engraved, with celestial illustration instead of flat white cards. */
+.playing-card{border:3px solid #e7d4a6;color:#f8edce;border-radius:10px;background:
+ radial-gradient(circle at 55% 52%,#0a6e64 0,#155b59 26%,#084249 51%,#092d35 75%,#141c27 100%);box-shadow:0 6px 16px #0f131bc9;overflow:hidden;text-align:left;isolation:isolate}
+.playing-card::before{box-shadow:inset 0 0 0 2px #102f35,inset 0 0 0 5px #dbb579a6;inset:0;border-radius:6px;pointer-events:none}
+.playing-card::after{content:"";position:absolute;z-index:-1;inset:7px;background:repeating-conic-gradient(from 5deg at 50% 52%,#e6c5852d 0 5deg,transparent 5deg 15deg);mask-image:radial-gradient(circle,#000 0 36%,transparent 37% 100%);opacity:.9}
+.card-corner{position:relative;z-index:2;font-size:14px;color:#f6db9e;text-shadow:0 1px 4px #000}.card-ref{font-size:8px;color:#f8dab7;text-shadow:0 1px 3px #000;max-width:65px}
+.card-icon{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:86px;height:86px;border-radius:50%;border:2px solid #f5d48e;background:radial-gradient(circle,#fdf2c1 0,#f3bb5f 29%,#b67c37 53%,#2a604f 57%,#081e26 70%);box-shadow:0 0 0 5px #e3a74e44,0 0 0 8px #134b4699,0 0 26px #eeac4f67;color:#68422d;text-shadow:0 1px #fce9ad;font-size:41px;display:grid;place-items:center;z-index:1}
+.card-bottom{position:relative;z-index:2;gap:4px;padding:9px 0 0;background:linear-gradient(180deg,transparent,#082b34d9 19%,#0a222ddf 100%);margin:0 -7px -7px;padding-left:7px;padding-right:5px;padding-bottom:7px}
+.card-family{font-size:8px;color:#edcc8b;letter-spacing:.12em;text-shadow:0 1px 3px #000}.card-name{font-size:16px;line-height:1.05;text-shadow:0 2px 4px #000;overflow-wrap:anywhere}.card-tags{gap:3px}.card-tags span{font-size:8px;color:#ffe8ac;border:1px solid #dfb86c70;background:#103e3fc0;padding:3px 4px}
+.played-stack{min-height:170px}.played-stack .playing-card{padding:9px}.played-stack .card-icon{height:60px;width:60px;top:21%;font-size:31px}.played-stack .card-name{font-size:13px}.played-stack .card-tags span{font-size:7px}.played-stack .card-ref{font-size:7px}
+.player-hand .playing-card{flex:0 0 150px;width:150px;height:212px;min-width:0;margin-left:-65px;transform-origin:50% 170%;transform:translateY(var(--fanY,0)) rotate(var(--fanR,0deg)) translateX(0);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease;margin-bottom:4px}
+.player-hand .playing-card:first-child{margin-left:0}
+.player-hand .playing-card.can-play{box-shadow:0 6px 18px #1119,0 0 0 2px #92ffdc8c,0 0 17px #74ffe9a0}
+.player-hand .playing-card.cannot-play,.player-hand .playing-card.inactive{filter:saturate(.58) brightness(.8);opacity:.87}
+.player-hand .playing-card:hover,.player-hand .playing-card:focus-visible{transform:translateY(-78px) rotate(0deg) scale(1.16);z-index:200!important;filter:saturate(1.2) brightness(1.1)}
+.player-hand .playing-card.dialogue-allowed{box-shadow:0 0 0 2px #edd288,0 0 20px #e9a843}
+.player-glove{position:absolute;bottom:94px;z-index:23;width:140px;height:220px;pointer-events:none;opacity:.95;filter:drop-shadow(3px 7px 9px #080909aa)}
+.player-glove-left{left:-61px;transform:rotate(-26deg);background:linear-gradient(110deg,#101b25,#53616e 60%,#0d1825);clip-path:polygon(0 55%,21% 30%,45% 5%,57% 2%,62% 13%,61% 30%,73% 7%,83% 12%,80% 40%,93% 25%,99% 34%,82% 74%,74% 100%,9% 100%)}
+.player-glove-right{right:-82px;transform:rotate(30deg);background:linear-gradient(270deg,#131b23,#485461 60%,#0f1620);clip-path:polygon(0 70%,12% 25%,28% 15%,36% 40%,49% 4%,61% 13%,65% 44%,74% 10%,92% 32%,100% 70%,100% 100%,21% 100%)}
+.footer-hint{margin-top:-4px;position:relative;z-index:23;font-size:10px;color:#bda997}.footer-hint .game-status{color:#e5cfab}
+.turn-toast{top:46%;background:#191e1ee8;border:1px solid #d6a9689c;color:#ffe0b0;box-shadow:0 8px 20px #0007}
+.mission-panel{border-color:#c3936044}.story-badge-row{margin-top:8px}.story-badge-row .story-badge:nth-child(3){display:none}
+.overlay{background:radial-gradient(circle at 50% 45%,#102029a8,#05080cef 90%);backdrop-filter:blur(9px)}
+.modal{background:radial-gradient(circle at 50% 12%,#343039,#111a21 62%);border:1px solid #c69c5a65;box-shadow:0 25px 75px #000e}
+.modal-seal{color:#e7bb82}.hero-card{border:3px solid #eed6a9;background:radial-gradient(circle,#377e75,#113d45 65%,#10232b);color:#f8d999;box-shadow:0 0 0 3px #1b3534,0 15px 25px #0009}
+.hero-card.hc-center{background:radial-gradient(circle,#ffd899,#ce8f49 43%,#403f39 55%,#143f47 80%);color:#262d25}
+.primary-button{background:linear-gradient(180deg,#ffe0a2,#daa653)}
+@keyframes idle-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (min-width:1500px){.arena{height:min(860px,calc(100vh - 94px))}.opponents{top:68px}.bot-character{height:380px}.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:290px}.table-surface{top:47%}.table-play{top:51%}.player-hand .playing-card{flex-basis:165px;width:165px;height:232px}.player-hand{min-height:237px}}
+@media (max-width:1300px){.layout{grid-template-columns:minmax(180px,220px) minmax(0,1fr) minmax(190px,225px)}.sidebar-right{grid-column:auto;display:flex;order:0}.sidebar-right .sources-note{grid-column:auto}.arena{min-height:680px;height:740px}.opponents{top:67px}.bot-character{height:285px}.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:220px}.player-hand .playing-card{margin-left:-85px;flex-basis:137px;width:137px;height:198px}.card-name{font-size:14px}.card-icon{width:70px;height:70px;font-size:33px}}
+@media (max-width:1030px){.layout{grid-template-columns:minmax(0,1fr) 270px;grid-template-areas:'arena right' 'left left';gap:12px}.arena{grid-area:arena}.sidebar-left{grid-area:left;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sidebar-right{grid-area:right;display:flex;flex-direction:column}.opponents{top:75px}.bot-character{height:270px}.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:195px}.tip-zone{max-width:118px;align-items:flex-start;text-align:left}.table-play{grid-template-columns:1fr 1fr 1fr}.room-label{font-size:8px}.table-surface{height:57%}}
+@media (max-width:750px){.layout{display:flex;flex-direction:column;gap:10px}.arena{order:0;width:100%;min-height:620px;height:710px}.sidebar-left{order:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sidebar-left .lore-panel{grid-column:1/-1}.sidebar-right{order:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sidebar-right .log-panel,.sidebar-right .sources-note{grid-column:1/-1}.opponents{grid-template-columns:1fr 1.5fr 1fr;top:66px;padding:0}.bot-character{height:287px}.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:209px}.table-surface{top:48%;height:59%}.table-play{top:52%}.player-hand{justify-content:center;padding:12px 0 0}.player-hand .playing-card{margin-left:-77px;flex-basis:125px;width:125px;height:194px}.card-icon{width:64px;height:64px;font-size:32px}.card-name{font-size:13px}.card-tags span{font-size:7px}.player-glove{bottom:97px}}
+@media (max-width:470px){.app-shell{padding:6px}.topbar{padding:0 3px;gap:8px}.brand-mark{width:40px;height:40px}.brand h1{font-size:21px}.brand-kicker{font-size:7px}.top-actions{gap:5px}.edition-pill{display:none}.icon-button{width:34px;height:34px}.soft-button{font-size:11px;padding:7px 10px}.arena{height:665px;min-height:0;border-radius:13px}.room-label{top:10px;font-size:8px;letter-spacing:.1em}.room-subtitle{top:26px}.lounge-sign{left:8px;top:110px;font-size:13px}.lounge-sign span{font-size:8px}.backroom-furniture{width:69px;height:80px;right:2%;top:106px}.opponents{top:74px}.bot-character{height:230px}.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:144px}.bot-title{font-size:9px;padding:4px 6px}.bot-title span{display:none}.bot-count{width:22px;height:22px;font-size:10px}.table-rim{top:42%}.table-surface{top:43%;height:63%}.table-play{top:48%;left:3%;right:3%;gap:0;grid-template-columns:1fr 1fr 1fr}.deck-button,.played-stack .playing-card{width:85px;height:126px}.played-stack{min-height:130px}.played-stack .card-icon{width:45px;height:45px;font-size:24px;top:19%}.played-stack .card-name{font-size:9px}.played-stack .card-corner{font-size:10px}.played-stack .card-family{font-size:6px}.played-stack .card-tags{display:none}.deck-button .back-emblem{font-size:36px}.deck-button .back-word{font-size:6px}.deck-size{min-width:21px;height:21px;font-size:9px}.tip-zone{padding:7px;max-width:96px;border-radius:7px}.tip-zone strong{font-size:10px}.tip-zone p{font-size:9px}.tip-glyph{font-size:12px}.zone-caption{font-size:8px}.deck-label{font-size:7px}.player-area{padding:10px 6px 7px}.your-turn-label strong{font-size:13px}.your-turn-label small{font-size:10px}.avatar-dot{height:32px;width:32px}.hand-counter{font-size:9px}.player-hand{min-height:177px;justify-content:flex-start;padding:5px 3px 0}.player-hand .playing-card{margin-left:-50px;flex:0 0 104px;width:104px;height:164px;padding:8px}.player-hand .playing-card:first-child{margin-left:0}.card-icon{width:53px;height:53px;font-size:24px}.card-name{font-size:11px}.card-family{font-size:7px}.card-tags span{font-size:6px;padding:2px}.card-ref{font-size:7px}.card-bottom{padding-left:6px}.player-glove{display:none}.footer-hint{font-size:8px}.sidebar-left,.sidebar-right{display:flex}.turn-toast{top:40%;font-size:12px}.modal{max-height:93vh}}
+@media (prefers-reduced-motion:reduce){.avatar-svg,.deck-button.available{animation:none}}
+/* Ajustes de profundidad visual: los naipes de mesa quedan delante de rivales,
+   pero la mano del jugador solo ocupa la zona inferior de la escena. */
+@media (min-width:751px){
+ .table-rim{top:40%}
+ .table-surface{top:41%}
+ .table-play{top:43%}
+}
+@media (max-width:750px){
+ .table-rim{top:41%}
+ .table-surface{top:41%}
+ .table-play{top:43%}
+ .opponents{display:flex!important;justify-content:space-around;align-items:flex-end;min-height:260px;gap:0;padding:0 6px}
+ .bot-seat{flex:0 1 27%;width:27%;min-width:0}
+ .bot-seat:nth-child(1){order:2;flex:0 1 46%;width:46%}
+ .bot-seat:nth-child(2){order:1}
+ .bot-seat:nth-child(3){order:3}
+ .bot-character,.bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{width:100%;max-width:100%}
+ .bot-seat:nth-child(1) .bot-character{height:250px}
+ .bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:166px}
+}
+@media (max-width:470px){
+ .table-rim{top:37%}
+ .table-surface{top:38%}
+ .table-play{top:40%}
+ .opponents{top:60px;min-height:265px}
+ .bot-seat:nth-child(1) .bot-character{height:235px}
+ .bot-seat:nth-child(2) .bot-character,.bot-seat:nth-child(3) .bot-character{height:145px}
+ .bot-title{bottom:0}
+}
+</style></head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✳</div>
+        <div>
+          <span class="brand-kicker">EXPO SAN BUENA · CONSTITUCIÓN Y DEMOCRACIA</span>
+          <h1>DEMO<span>CARTAS</span></h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="edition-pill">LA MESA DE LA CONSTITUCIÓN</span>
+        <button class="icon-button" id="rulesToggle" type="button" title="Ver reglas" aria-label="Ver reglas">?</button>
+        <button class="icon-button" id="soundToggle" type="button" aria-label="Activar o desactivar sonido" aria-pressed="true">♪</button>
+        <button class="soft-button" id="restartBtn" type="button">↻ <span>Nueva partida</span></button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar sidebar-left" aria-label="Ayuda y misión">
+        <div class="side-panel mission-panel">
+          <div class="side-heading"><span class="section-index">01 / MISIÓN</span><span>✦</span></div>
+          <h2 id="storyTitle">La Casa de la Democracia</h2>
+          <p id="storyText">Entras a una mesa ceremonial donde cada carta representa una idea clave de Constitución y Democracia. Para ganar debes hilar relaciones correctas entre derechos, instituciones, acciones y principios.</p>
+          <div class="story-badge-row">
+            <span class="story-badge">80 cartas</span>
+            <span class="story-badge">1–4 jugadores</span>
+            <span class="story-badge">IA temática</span>
+          </div>
+        </div>
+
+        <div class="side-panel help-panel">
+          <div class="side-heading"><span class="section-index">02 / AYUDA</span><span>◎</span></div>
+          <h3>Cómo jugar</h3>
+          <ul class="guide-list" id="guideList">
+            <li>Juega una carta si comparte <strong>familia</strong> o <strong>eje temático</strong> con la carta central.</li>
+            <li>Si ninguna encaja, pulsa el <strong>mazo</strong> para robar una carta.</li>
+            <li>Las cartas iluminadas son las que sí puedes usar.</li>
+            <li>Gana quien se quede sin cartas primero.</li>
+          </ul>
+          <div class="shortcut-row">
+            <span><kbd>1</kbd>–<kbd>9</kbd> jugar</span>
+            <span><kbd>R</kbd> robar</span>
+            <span><kbd>Esc</kbd> cerrar paneles</span>
+          </div>
+        </div>
+
+        <div class="side-panel lore-panel">
+          <div class="side-heading"><span class="section-index">03 / CONTEXTO</span><span>✧</span></div>
+          <h3 id="objectiveTitle">Objetivo actual</h3>
+          <div class="relation-info" id="objectiveHint">Observa la carta en juego y busca una relación válida. Cada conexión representa cómo funciona la vida democrática cuando los conceptos se apoyan entre sí.</div>
+          <div class="mini-legend" id="themeLegend"></div>
+        </div>
+      </aside>
+
+      <main class="arena" aria-label="Mesa de juego">
+        <div class="arena-dots" aria-hidden="true"></div>
+        <div class="lounge-sign" aria-hidden="true">✦ CIVITAS <span>CLUB</span></div>
+        <div class="hanging-lamp" aria-hidden="true"><i></i></div>
+        <div class="backroom-furniture" aria-hidden="true"><div class="shelf"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="table-rim" aria-hidden="true"></div>
+        <div class="player-glove player-glove-left" aria-hidden="true"></div>
+        <div class="player-glove player-glove-right" aria-hidden="true"></div>
+        <div class="room-light room-light-left" aria-hidden="true"></div>
+        <div class="room-light room-light-right" aria-hidden="true"></div>
+        <div class="wall-symbol" aria-hidden="true">⚖</div>
+        <div class="room-label" aria-hidden="true">LA CASA DE LA DEMOCRACIA</div>
+        <div class="room-subtitle" aria-hidden="true">Relaciona, delibera y avanza</div>
+
+        <div class="opponents" id="opponents" aria-label="Jugadores rivales"></div>
+
+        <div class="table-surface" aria-hidden="true">
+          <div class="table-ornament">✧ <span>LA CONSTITUCIÓN NOS CONECTA</span> ✧</div>
+        </div>
+        <div class="table-play">
+          <div class="deck-zone">
+            <div class="zone-caption">ROBAR CARTA</div>
+            <button id="drawPile" type="button" class="deck-button card-back" aria-label="Robar una carta del mazo">
+              <span class="back-emblem">☼</span><span class="back-word">DEMO CARTAS</span>
+              <span class="deck-size" id="deckCount">0</span>
+            </button>
+            <span class="deck-label" id="deckHint">Roba si no tienes jugada</span>
+          </div>
+          <div class="played-zone">
+            <div class="zone-caption">CARTA EN JUEGO</div>
+            <div class="played-stack" id="playedStack" aria-live="polite"></div>
+          </div>
+          <div class="tip-zone" id="connectionTip">
+            <span class="tip-glyph">✦</span>
+            <div><strong>Enlaza conceptos</strong><p>Misma familia o eje compartido</p></div>
+          </div>
+        </div>
+
+        <div class="turn-toast" id="turnToast" role="status" aria-live="polite"></div>
+        <div class="player-area">
+          <div class="your-turn-label">
+            <span class="avatar-dot">TÚ</span>
+            <div>
+              <strong id="turnLabel">Tu mano</strong>
+              <small id="handCaption">Elige una carta relacionada</small>
+            </div>
+            <span class="hand-counter" id="handCount">0 cartas</span>
+          </div>
+          <div class="hand-scroll"><div class="player-hand" id="playerHand" aria-label="Tus cartas"></div></div>
+          <div class="footer-hint">
+            <span><kbd>1</kbd> – <kbd>9</kbd> jugar carta</span>
+            <span><kbd>R</kbd> robar</span>
+            <span id="gameStatus" class="game-status">El juego comenzará en breve.</span>
+          </div>
+        </div>
+      </main>
+
+      <aside class="sidebar sidebar-right" aria-label="Panel de juego">
+        <div class="side-panel state-panel">
+          <div class="side-heading"><span class="section-index">04 / PARTIDA</span><span class="status-dot"></span></div>
+          <h2 id="phaseTitle">La mesa está lista</h2>
+          <p id="phaseText">Conecta una carta usando su familia o uno de sus ejes.</p>
+          <div class="progress-stats">
+            <div><span>Ronda</span><strong id="roundNumber">1</strong></div>
+            <div><span>Jugadores</span><strong id="playersNumber">4</strong></div>
+            <div><span>Mazo</span><strong id="stockNumber">0</strong></div>
+          </div>
+        </div>
+        <div class="side-panel logic-panel">
+          <div class="side-heading"><span class="section-index">05 / CONEXIÓN</span><span>✧</span></div>
+          <h3>¿Por qué encajan?</h3>
+          <div id="relationInfo" class="relation-info">Tus cartas brillarán cuando compartan una relación con la carta central.</div>
+          <div class="family-legend" id="familyLegend"></div>
+        </div>
+        <div class="side-panel log-panel">
+          <div class="side-heading"><span class="section-index">06 / CRÓNICA</span><span>◉ EN VIVO</span></div>
+          <h3>Movimientos</h3>
+          <div class="event-log" id="eventLog" aria-live="polite"></div>
+        </div>
+        <div class="sources-note">Inspirado en la Constitución Política de Colombia de 1991. <button type="button" id="sourcesBtn">Fuentes y créditos ↗</button></div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="overlay" id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <div class="modal start-modal">
+      <div class="modal-seal">✳ <span>LA MESA DE LA CONSTITUCIÓN</span> ✳</div>
+      <div class="hero-card-display" aria-hidden="true"><div class="hero-card hc-left">⚖</div><div class="hero-card hc-center">✳<small>DEMOCRACIA</small></div><div class="hero-card hc-right">❖</div></div>
+      <div class="eyebrow">UN JUEGO. MUCHAS CONEXIONES.</div>
+      <h2 id="startTitle">Reúne ideas,<br><em>defiende la democracia.</em></h2>
+      <p class="story-lead">La Casa de la Democracia abre su mesa ceremonial. Cada participante representa una voz de la vida pública y debe conectar conceptos reales de Constitución, participación y ciudadanía para conquistar el centro de la mesa.</p>
+      <div class="story-columns">
+        <div>
+          <h3>Tu rol</h3>
+          <p>Eres quien debe demostrar que comprende cómo se enlazan derechos, instituciones, acciones ciudadanas y principios democráticos.</p>
+        </div>
+        <div>
+          <h3>Rivales IA</h3>
+          <p>Te enfrentarás a personajes virtuales que representan distintas formas de pensar la democracia: análisis, vigilancia, diálogo y estrategia.</p>
+        </div>
+      </div>
+      <div class="setup-row"><span>¿Cuántos participan?</span><div class="seg-buttons" id="playerCountOptions" role="group" aria-label="Número de participantes"><button type="button" data-count="2">2</button><button type="button" data-count="3">3</button><button type="button" data-count="4" class="selected">4</button></div></div>
+      <button id="startBtn" type="button" class="primary-button">COMENZAR PARTIDA <span>↗</span></button>
+      <small class="start-foot">1 persona + <span id="botsLabel">3</span> rivales virtuales · Web lista para GitHub Pages</small>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="rulesOverlay" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <div class="modal info-modal">
+      <button type="button" class="modal-close" data-close="rulesOverlay" aria-label="Cerrar reglas">×</button>
+      <span class="eyebrow">MANUAL DE JUEGO</span>
+      <h2 id="rulesTitle">Reglas de la mesa</h2>
+      <div class="rules-grid">
+        <div><span class="rule-number">01</span><h3>Recibe tu mano</h3><p>Cada participante comienza con 6 cartas. El orden de juego se alterna por turnos.</p></div>
+        <div><span class="rule-number">02</span><h3>Conecta</h3><p>Juega una carta de la misma <strong>familia</strong> o que comparta al menos un <strong>eje temático</strong> con la carta central.</p></div>
+        <div><span class="rule-number">03</span><h3>Come una carta</h3><p>Si no tienes una carta válida, <strong>debes robar una</strong> del mazo. Robar termina tu turno.</p></div>
+        <div><span class="rule-number">04</span><h3>Gana</h3><p>El primer jugador que se quede sin cartas gana. Si el mazo se termina, se reciclan las cartas descartadas, excepto la visible.</p></div>
+      </div>
+      <div class="rule-example"><span>✦ EJEMPLO</span><p><strong>Derecho al voto → Registraduría Nacional</strong> es válido porque las dos comparten el eje <em>Representación</em> y se conectan con la participación política.</p></div>
+      <p class="legal-note">Los ejes son etiquetas pedagógicas del juego; no son categorías jurídicas oficiales. Si toda la mesa se bloquea y no hay cartas para robar, se activa una ronda de «diálogo» y se permite una jugada libre para continuar.</p>
+      <button type="button" data-close="rulesOverlay" class="primary-button">ENTENDIDO</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="endOverlay" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal end-modal">
+      <div class="victory-spark">✳</div>
+      <span class="eyebrow" id="endEyebrow">FIN DE LA PARTIDA</span>
+      <h2 id="endTitle">¡Victoria!</h2>
+      <p id="endMessage">Has ganado.</p>
+      <div class="end-summary" id="endStats"></div>
+      <button id="againBtn" type="button" class="primary-button">VOLVER A JUGAR ↗</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="sourcesOverlay" role="dialog" aria-modal="true" aria-labelledby="sourcesTitle">
+    <div class="modal info-modal">
+      <button type="button" class="modal-close" data-close="sourcesOverlay" aria-label="Cerrar">×</button>
+      <span class="eyebrow">FUENTES Y CRÉDITOS</span>
+      <h2 id="sourcesTitle">Contenido educativo</h2>
+      <p>Las referencias de cada carta orientan su lectura. La explicación y los ejes temáticos son adaptaciones breves para el juego; consulta la norma oficial para conocer el texto completo.</p>
+      <ul class="source-list">
+        <li><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4125" target="_blank" rel="noopener noreferrer">Constitución Política de Colombia de 1991 — Función Pública ↗</a></li>
+        <li><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=10570" target="_blank" rel="noopener noreferrer">Ley 850 de 2003 — Veedurías ciudadanas ↗</a></li>
+      </ul>
+      <p class="legal-note">Juego académico inspirado en el proyecto Expo San Buena de la asignatura Constitución y Democracia. No es un material oficial ni ofrece asesoría jurídica.</p>
+      <button type="button" class="primary-button" data-close="sourcesOverlay">CERRAR</button>
+    </div>
+  </div>
+
+  <noscript>Este juego necesita JavaScript activado en el navegador.</noscript>
+<script>/* Contenido cívico educativo. Los ejes son conexiones lúdicas y pedagógicas, no clasificaciones jurídicas oficiales. */
+window.DEMOCARTAS_DATA = (() => {
+  const families = {
+    derechos: { name:'Derechos', short:'DERECHOS', symbol:'✦', color:'#35c6b6', hint:'Garantías, libertades y protección de la dignidad humana.' },
+    instituciones: { name:'Instituciones', short:'ESTADO', symbol:'♜', color:'#e4ae64', hint:'Entidades y ramas que organizan la vida pública.' },
+    acciones: { name:'Acciones ciudadanas', short:'ACCIÓN', symbol:'✳', color:'#a899ff', hint:'Mecanismos de participación, control y defensa.' },
+    principios: { name:'Principios y deberes', short:'PRINCIPIOS', symbol:'❖', color:'#ff7f95', hint:'Valores, fines y responsabilidades de la convivencia.' }
+  };
+
+  const themes = {
+    participacion:'Participación', representacion:'Representación', justicia:'Justicia', igualdad:'Igualdad',
+    legalidad:'Legalidad', proteccion:'Protección', convivencia:'Convivencia', control:'Control',
+    libertad:'Libertad', educacion:'Educación', transparencia:'Transparencia', paz:'Paz',
+    ambiente:'Ambiente', pluralismo:'Pluralismo', corresponsabilidad:'Corresponsabilidad'
+  };
+
+  const raw = {
+    derechos: [
+      ['d01','Libertad de expresión','libertad','participacion','Art. 20','Permite expresar y difundir pensamientos, opiniones e información.'],
+      ['d02','Igualdad ante la ley','igualdad','justicia','Art. 13','Todas las personas deben recibir igual protección y trato de las autoridades.'],
+      ['d03','Debido proceso','justicia','legalidad','Art. 29','Toda actuación judicial y administrativa debe respetar garantías básicas.'],
+      ['d04','Derecho de petición','participacion','control','Art. 23','Permite presentar solicitudes respetuosas y recibir respuesta oportuna.'],
+      ['d05','Derecho a la educación','educacion','igualdad','Art. 67','La educación es un derecho y un servicio público con función social.'],
+      ['d06','Participación política','participacion','representacion','Art. 40','La ciudadanía puede conformar, ejercer y controlar el poder político.'],
+      ['d07','Derecho a la paz','paz','convivencia','Art. 22','La paz es un derecho y un deber de obligatorio cumplimiento.'],
+      ['d08','Libertad de conciencia','libertad','pluralismo','Art. 18','Se garantiza que nadie será molestado por razón de sus convicciones.'],
+      ['d09','Libertad de asociación','participacion','libertad','Art. 38','Se garantiza el derecho de libre asociación para el desarrollo de actividades lícitas.'],
+      ['d10','Ambiente sano','ambiente','proteccion','Art. 79','Todas las personas tienen derecho a gozar de un ambiente sano.'],
+      ['d11','Derechos de la niñez','proteccion','igualdad','Art. 44','Los derechos de los niños prevalecen sobre los derechos de los demás.'],
+      ['d12','Acceso a la justicia','justicia','legalidad','Art. 229','Se garantiza el acceso a la administración de justicia.'],
+      ['d13','Libre desarrollo de la personalidad','libertad','igualdad','Art. 16','Cada persona puede construir su proyecto de vida con límites en los derechos ajenos.'],
+      ['d14','Habeas data','proteccion','transparencia','Art. 15','Permite conocer, actualizar y rectificar información personal.'],
+      ['d15','Intimidad personal y familiar','proteccion','libertad','Art. 15','El Estado debe respetar y hacer respetar la intimidad de las personas.'],
+      ['d16','Libertad de cultos','libertad','pluralismo','Art. 19','Toda persona tiene derecho a profesar libremente su religión.'],
+      ['d17','Derecho al trabajo','igualdad','corresponsabilidad','Art. 25','El trabajo es un derecho y una obligación social y goza de especial protección.'],
+      ['d18','Acceso a documentos públicos','transparencia','control','Art. 74','Toda persona tiene derecho a acceder a documentos públicos salvo reserva legal.'],
+      ['d19','Protección de la tercera edad','proteccion','igualdad','Art. 46','El Estado, la sociedad y la familia concurren para la protección y asistencia de las personas mayores.'],
+      ['d20','Derecho a elegir y ser elegido','representacion','participacion','Art. 40','La ciudadanía puede elegir representantes y aspirar a cargos públicos.']
+    ],
+    instituciones: [
+      ['i01','Congreso de la República','representacion','legalidad','Art. 114','Reforma la Constitución, hace las leyes y ejerce control político.'],
+      ['i02','Presidencia de la República','representacion','legalidad','Art. 115','Integra el Gobierno nacional y dirige la rama ejecutiva.'],
+      ['i03','Corte Constitucional','justicia','proteccion','Art. 241','Guarda la integridad y supremacía de la Constitución.'],
+      ['i04','Registraduría Nacional','participacion','representacion','Art. 120','Hace parte de la organización electoral.'],
+      ['i05','Consejo Nacional Electoral','participacion','control','Art. 265','Regula, inspecciona, vigila y controla la actividad electoral.'],
+      ['i06','Defensoría del Pueblo','proteccion','igualdad','Art. 282','Promueve y divulga los derechos humanos y los protege.'],
+      ['i07','Procuraduría General','control','legalidad','Art. 277','Vigila el cumplimiento de la Constitución, las leyes y las decisiones judiciales.'],
+      ['i08','Contraloría General','control','transparencia','Art. 267','Vigila la gestión fiscal de la administración y de quienes manejan fondos públicos.'],
+      ['i09','Alcaldía municipal','representacion','convivencia','Art. 314','El alcalde es jefe de la administración local.'],
+      ['i10','Concejo municipal','representacion','control','Art. 312','Corporación político-administrativa de elección popular.'],
+      ['i11','Rama judicial','justicia','legalidad','Art. 116','Diversos órganos administran justicia.'],
+      ['i12','Consejo de Estado','justicia','legalidad','Art. 237','Es el tribunal supremo de lo contencioso administrativo.'],
+      ['i13','Cámara de Representantes','representacion','control','Art. 132','Hace parte del Congreso y representa al pueblo.'],
+      ['i14','Senado de la República','representacion','legalidad','Art. 171','Corporación de circunscripción nacional que integra el Congreso.'],
+      ['i15','Gobernación','representacion','convivencia','Art. 303','El gobernador dirige la administración seccional y representa al departamento.'],
+      ['i16','Asamblea departamental','representacion','control','Art. 299','Corporación administrativa de elección popular en los departamentos.'],
+      ['i17','Personería municipal','proteccion','control','Ley 136/1994','Vigila la conducta oficial y defiende los derechos ciudadanos en el municipio.'],
+      ['i18','Juntas Administradoras Locales','participacion','representacion','Art. 318','Permiten la participación ciudadana en la administración local.'],
+      ['i19','Organización electoral','participacion','transparencia','Art. 120','Conjunto institucional que organiza los procesos electorales.'],
+      ['i20','Corte Suprema de Justicia','justicia','legalidad','Art. 234','Máximo tribunal de la jurisdicción ordinaria.']
+    ],
+    acciones: [
+      ['a01','Voto','participacion','representacion','Art. 103','Mecanismo central de participación ciudadana.'],
+      ['a02','Referendo','participacion','legalidad','Art. 103','Convoca a la ciudadanía para aprobar o rechazar un proyecto normativo.'],
+      ['a03','Plebiscito','participacion','representacion','Art. 103','Consulta al pueblo una decisión política del Ejecutivo.'],
+      ['a04','Consulta popular','participacion','convivencia','Art. 103','Permite consultar al pueblo sobre asuntos de trascendencia.'],
+      ['a05','Cabildo abierto','participacion','control','Art. 103','Espacio para que la comunidad intervenga ante corporaciones públicas.'],
+      ['a06','Revocatoria del mandato','participacion','control','Art. 103','Mecanismo para terminar el mandato de una autoridad elegida.'],
+      ['a07','Iniciativa legislativa','participacion','legalidad','Art. 103','La ciudadanía puede presentar proyectos normativos.'],
+      ['a08','Acción de tutela','justicia','proteccion','Art. 86','Protege derechos fundamentales cuando son vulnerados o amenazados.'],
+      ['a09','Acción popular','proteccion','ambiente','Art. 88','Defiende derechos e intereses colectivos como el ambiente o el espacio público.'],
+      ['a10','Acción de cumplimiento','justicia','legalidad','Art. 87','Busca hacer efectivo el cumplimiento de normas o actos administrativos.'],
+      ['a11','Veeduría ciudadana','control','participacion','Ley 850/2003','La ciudadanía vigila la gestión pública y los resultados de proyectos.'],
+      ['a12','Acción de inconstitucionalidad','justicia','control','Art. 40.6','La ciudadanía puede demandar normas contrarias a la Constitución.'],
+      ['a13','Audiencia pública','participacion','transparencia','Ley 1437/2011','Espacio para escuchar a la ciudadanía antes de decisiones relevantes.'],
+      ['a14','Rendición de cuentas','transparencia','control','Ley 1757/2015','La autoridad explica su gestión y responde a la ciudadanía.'],
+      ['a15','Denuncia ciudadana','control','legalidad','Cultura cívica','Permite reportar irregularidades para activar controles institucionales.'],
+      ['a16','Asamblea estudiantil','participacion','convivencia','Vida democrática','Espacio para deliberar y tomar decisiones colectivas en la comunidad educativa.'],
+      ['a17','Debate público','participacion','pluralismo','Cultura democrática','Contraste de ideas con argumentos para formar decisiones.'],
+      ['a18','Observación electoral','control','transparencia','Cultura cívica','Acompaña y vigila el desarrollo de las elecciones.'],
+      ['a19','Derecho al voto informado','educacion','participacion','Cultura democrática','La ciudadanía compara propuestas y decide con criterio.'],
+      ['a20','Control social al presupuesto','control','corresponsabilidad','Participación ciudadana','La comunidad vigila cómo se usan los recursos públicos.']
+    ],
+    principios: [
+      ['p01','Soberanía popular','participacion','representacion','Art. 3','La soberanía reside exclusivamente en el pueblo.'],
+      ['p02','Supremacía constitucional','legalidad','proteccion','Art. 4','La Constitución es norma de normas.'],
+      ['p03','Estado social de derecho','justicia','igualdad','Art. 1','Colombia se organiza como Estado social de derecho.'],
+      ['p04','Democracia participativa','participacion','convivencia','Art. 1','La República es democrática, participativa y pluralista.'],
+      ['p05','Separación de poderes','control','legalidad','Art. 113','Los órganos del Estado tienen funciones separadas y colaboran armónicamente.'],
+      ['p06','Pluralismo','igualdad','pluralismo','Art. 1','Reconoce la diversidad de ideas, identidades y visiones.'],
+      ['p07','Solidaridad','convivencia','proteccion','Art. 95','Toda persona debe obrar conforme al principio de solidaridad social.'],
+      ['p08','Respeto por los demás','convivencia','igualdad','Art. 95','Se deben respetar los derechos ajenos y no abusar de los propios.'],
+      ['p09','Participación ciudadana','participacion','convivencia','Art. 2','El Estado facilita la participación de todas las personas en decisiones que las afectan.'],
+      ['p10','Responsabilidad pública','legalidad','control','Art. 6','Los servidores públicos responden por infracción de la Constitución y la ley.'],
+      ['p11','Servicio a la comunidad','proteccion','corresponsabilidad','Art. 2','Servir a la comunidad es un fin esencial del Estado.'],
+      ['p12','Diversidad cultural','igualdad','pluralismo','Art. 7','El Estado reconoce y protege la diversidad étnica y cultural de la Nación.'],
+      ['p13','Transparencia','transparencia','control','Buen gobierno','La gestión pública debe ser visible y susceptible de vigilancia ciudadana.'],
+      ['p14','Publicidad de los actos públicos','transparencia','legalidad','Buen gobierno','Las decisiones públicas deben poder conocerse, salvo reserva legal.'],
+      ['p15','Corresponsabilidad','corresponsabilidad','convivencia','Cultura ciudadana','La democracia funciona cuando ciudadanía e instituciones asumen responsabilidades compartidas.'],
+      ['p16','Deliberación','participacion','pluralismo','Cultura democrática','Escuchar argumentos fortalece las decisiones colectivas.'],
+      ['p17','Resolución pacífica de conflictos','paz','justicia','Cultura democrática','Los desacuerdos deben tramitarse con diálogo, reglas y garantías.'],
+      ['p18','Memoria democrática','educacion','participacion','Formación ciudadana','Aprender del pasado ayuda a proteger las instituciones.'],
+      ['p19','Protección del bien común','corresponsabilidad','proteccion','Vida pública','El interés general prevalece sobre el interés particular.'],
+      ['p20','Respeto por la Constitución','legalidad','corresponsabilidad','Art. 95','Toda persona debe apoyar y respetar a las autoridades democráticas legítimamente constituidas.']
+    ]
+  };
+
+  const cards = Object.entries(raw).flatMap(([family, arr]) =>
+    arr.map(([id,title,t1,t2,reference,description]) => ({id, title, family, tags:[t1,t2], reference, description}))
+  );
+
+  return Object.freeze({families, themes, cards});
+})();
+</script><script>/* Illustraciones vectoriales originales: personajes de la Casa de la Democracia. */
+window.DemocartasAvatars = (() => {
+  function avatar(kind = 'rabbit') {
+    const palettes = {
+      rabbit:{fur:'#efa699',shade:'#b96775',inner:'#fa718b',bright:'#ffd4b5',eyes:'#70a99b',jacket:'#111d2b',shirt:'#fff3e4',tie:'#e1a458'},
+      fox:{fur:'#cd7c52',shade:'#884836',inner:'#ecae92',bright:'#ffcf9b',eyes:'#91d9b8',jacket:'#152330',shirt:'#efe5db',tie:'#7acbc0'},
+      owl:{fur:'#a1a4b8',shade:'#60647d',inner:'#d0b4ad',bright:'#e5d6c8',eyes:'#efd07b',jacket:'#292034',shirt:'#e3e5e7',tie:'#b0a1ef'}
+    };
+    const p=palettes[kind]||palettes.rabbit;
+    const id=kind;
+    const ears = kind==='rabbit' ? `<path d="M153 102 Q90 40 114 3 Q153 -10 196 83Z" fill="url(#fur-${id})" stroke="#a3616a" stroke-width="3"/><path d="M166 82 Q117 19 133 17 Q160 20 181 88Z" fill="${p.inner}" opacity=".8"/><path d="M280 98 Q335 25 319 2 Q279 -6 246 82Z" fill="url(#fur-${id})" stroke="#a3616a" stroke-width="3"/><path d="M271 84 Q307 17 306 20 Q286 34 258 89Z" fill="${p.inner}" opacity=".85"/>`
+    :kind==='fox' ? `<path d="M144 118 Q110 22 154 22 L208 90Z" fill="url(#fur-${id})" stroke="${p.shade}" stroke-width="4"/><path d="M154 90 L151 40 L195 93Z" fill="${p.inner}"/><path d="M269 94 L316 16 Q354 39 293 129Z" fill="url(#fur-${id})" stroke="${p.shade}" stroke-width="4"/><path d="M284 98 L318 39 L310 117Z" fill="${p.inner}"/>` : `<path d="M132 125 Q100 71 142 52 L173 100Z" fill="url(#fur-${id})"/><path d="M268 102 L301 50 Q346 63 309 130Z" fill="url(#fur-${id})"/><path d="M149 110 L118 62 L177 92Z" fill="${p.bright}" opacity=".65"/><path d="M283 95 L319 60 L305 122Z" fill="${p.bright}" opacity=".65"/>`;
+    const lower=kind==='rabbit' ? `<path d="M196 205 Q218 230 242 205 Q238 247 218 242 Q197 238 196 205Z" fill="${p.bright}"/><path d="M196 197 Q217 183 240 197 Q224 219 212 216Z" fill="${p.bright}"/><ellipse cx="218" cy="204" rx="12" ry="8" fill="#9e5d64"/>` : kind==='fox' ? `<path d="M177 193 Q217 233 264 194 Q254 245 215 242 Q184 234 177 193Z" fill="${p.bright}"/><path d="M207 203 L228 203 L218 219Z" fill="#3e3032"/>` : `<path d="M198 195 L218 213 L237 195 L221 233Z" fill="#d6a86b" stroke="#876c56" stroke-width="3"/>`;
+    const eyes=kind==='owl' ? `<ellipse cx="179" cy="167" rx="38" ry="44" fill="${p.bright}"/><ellipse cx="259" cy="167" rx="38" ry="44" fill="${p.bright}"/>` : `<ellipse cx="176" cy="165" rx="26" ry="34" fill="#fff7f1"/><ellipse cx="262" cy="165" rx="26" ry="34" fill="#fff7f1"/>`;
+    const anim=`<animate attributeName="ry" values="14;14;2;14;14" keyTimes="0;.44;.46;.48;1" dur="6.6s" repeatCount="indefinite"/>`;
+    const cards=[-32,-16,0,16,32].map((rot,i)=>`<g transform="translate(${188+i*15} 295) rotate(${rot})"><rect x="-24" y="-53" width="49" height="77" rx="5" fill="#100f19" stroke="#d6a35e" stroke-width="3"/><rect x="-19" y="-48" width="39" height="67" rx="3" fill="none" stroke="#b98b57" stroke-width=".85" stroke-dasharray="3 2"/><path d="M0 -39 L6 -23 L19 -15 L6 -7 L0 9 L-6 -7 L-19 -15 L-6 -23Z" fill="none" stroke="#b99057" stroke-width="1.3"/><circle cx="0" cy="-15" r="8" stroke="#e0c181" fill="none"/></g>`).join('');
+    return `<svg class="avatar-svg avatar-svg-${kind}" viewBox="0 0 440 390" role="img" aria-label="Personaje ${kind==='rabbit'?'Atenea, coneja rosada':kind==='fox'?'Bruno, zorro naranja':'Luna, búho violeta'}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+       <radialGradient id="fur-${id}" cx="38%" cy="24%"><stop stop-color="${p.bright}"/><stop offset=".63" stop-color="${p.fur}"/><stop offset="1" stop-color="${p.shade}"/></radialGradient>
+       <linearGradient id="coat-${id}" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="${p.jacket}"/><stop offset=".55" stop-color="#354154"/><stop offset="1" stop-color="#101c2a"/></linearGradient>
+       <linearGradient id="hands-${id}" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#56606e"/><stop offset="1" stop-color="#121622"/></linearGradient>
+       <filter id="shadow-${id}"><feGaussianBlur stdDeviation="7"/></filter>
+      </defs>
+      <ellipse cx="220" cy="379" rx="140" ry="12" fill="#040606" opacity=".5" filter="url(#shadow-${id})"/>
+      <path d="M128 276 Q73 295 74 389 L363 389 Q361 303 302 278 L258 260 L173 260Z" fill="url(#coat-${id})" stroke="#0a1720" stroke-width="6"/>
+      <path d="M171 258 L221 354 L263 259 Q236 267 221 269 Q204 268 171 258Z" fill="${p.shirt}"/>
+      <path d="M218 270 L205 288 L219 301 L232 289Z" fill="${p.tie}"/><path d="M219 299 L205 358 L223 373 L236 355Z" fill="${p.tie}"/>
+      <path d="M173 260 L219 362 L164 312 L183 301 L159 286Z" fill="#192634" stroke="#637181" stroke-width="2"/>
+      <path d="M262 260 L220 362 L280 312 L261 301 L282 284Z" fill="#192634" stroke="#637181" stroke-width="2"/>
+      ${ears}
+      <path d="M136 131 Q143 69 219 67 Q298 66 304 132 Q325 177 296 221 Q278 258 218 261 Q162 260 140 221 Q109 187 136 131Z" fill="url(#fur-${id})" stroke="${p.shade}" stroke-width="4"/>
+      <ellipse cx="153" cy="205" rx="29" ry="18" fill="${p.bright}" opacity=".2"/><ellipse cx="284" cy="205" rx="29" ry="18" fill="${p.bright}" opacity=".2"/>
+      ${eyes}
+      <g><ellipse cx="176" cy="168" rx="15" ry="20" fill="${p.eyes}"/><ellipse cx="262" cy="168" rx="15" ry="20" fill="${p.eyes}"/><ellipse cx="177" cy="169" rx="7" ry="15" fill="#16171b">${anim}</ellipse><ellipse cx="263" cy="169" rx="7" ry="15" fill="#16171b">${anim}</ellipse><circle cx="172" cy="160" r="4" fill="white"/><circle cx="259" cy="159" r="4" fill="white"/></g>
+      <path d="M149 128 Q176 108 201 135" fill="none" stroke="${p.shade}" stroke-width="8" stroke-linecap="round"/>
+      <path d="M240 134 Q262 109 289 127" fill="none" stroke="${p.shade}" stroke-width="8" stroke-linecap="round"/>
+      ${lower}
+      <path d="M112 315 Q151 282 187 307 L196 360 L149 380 Q94 363 112 315Z" fill="url(#hands-${id})" stroke="#141b24" stroke-width="5"/>
+      <path d="M316 318 Q284 291 253 306 L252 358 L301 375 Q344 360 316 318Z" fill="url(#hands-${id})" stroke="#141b24" stroke-width="5"/>
+      <g class="avatar-card-fan">${cards}</g>
+      <path d="M173 348 Q165 329 184 314 Q205 301 213 322 L229 356 Q201 375 173 348Z" fill="url(#hands-${id})" stroke="#161b26" stroke-width="3"/>
+      <path d="M255 349 Q266 322 245 314 Q230 310 224 332 L220 359 Q239 372 255 349Z" fill="url(#hands-${id})" stroke="#161b26" stroke-width="3"/>
+      <path d="M179 317 Q192 316 203 327 M184 328 L211 340 M234 326 L253 317" stroke="#778391" stroke-width="2" opacity=".6" fill="none"/>
+    </svg>`;
+  }
+  return {avatar};
+})();
+</script><script>'use strict';
+(() => {
+  const {cards: CARD_LIBRARY, families: FAMILIES, themes: THEMES} = window.DEMOCARTAS_DATA;
+  const $ = id => document.getElementById(id);
+  const ui = Object.fromEntries([
+    'opponents','playerHand','playedStack','drawPile','deckCount','deckHint','connectionTip','turnToast',
+    'turnLabel','handCaption','handCount','gameStatus','phaseTitle','phaseText','roundNumber',
+    'playersNumber','stockNumber','relationInfo','familyLegend','eventLog','themeLegend',
+    'storyTitle','storyText','objectiveTitle','objectiveHint',
+    'startOverlay','rulesOverlay','endOverlay','sourcesOverlay','startBtn','restartBtn',
+    'againBtn','rulesToggle','soundToggle','sourcesBtn','playerCountOptions','botsLabel',
+    'endTitle','endEyebrow','endMessage','endStats'
+  ].map(id => [id,$(id)]));
+
+  const BOTS = [
+    {name:'Atenea',subtitle:'LA JURISTA',face:'rabbit',persona:'defiende la lógica institucional y cuida la legalidad.'},
+    {name:'Bruno',subtitle:'EL VEEDOR',face:'fox',persona:'vigila el control ciudadano y la transparencia.'},
+    {name:'Luna',subtitle:'LA MEDIADORA',face:'owl',persona:'prefiere rutas de convivencia, pluralismo y diálogo.'}
+  ];
+
+  const STORY_BY_FAMILY = {
+    derechos:'Los derechos son el corazón de la dignidad humana. Conectarlos bien muestra cómo la Constitución protege a las personas.',
+    instituciones:'Las instituciones son la estructura del Estado. Cada una cumple funciones distintas para sostener la democracia.',
+    acciones:'Las acciones ciudadanas convierten la teoría en participación real: votar, vigilar, debatir, exigir y proponer.',
+    principios:'Los principios y deberes orientan la convivencia y el sentido del Estado social de derecho.'
+  };
+
+  let selectedCount = 4;
+  let soundEnabled = true;
+  let audioContext;
+  let botTimer;
+  let toastTimer;
+  let state = null;
+
+  function shuffle(items) {
+    const arr = [...items];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function connection(a, b) {
+    if (!a || !b) return {valid:false, reason:'No hay una carta en la mesa.'};
+    const sameFamily = a.family === b.family;
+    const commonThemes = a.tags.filter(t => b.tags.includes(t));
+    const pieces = [];
+    if (sameFamily) pieces.push(`la familia ${FAMILIES[a.family].name}`);
+    if (commonThemes.length) pieces.push(`el eje${commonThemes.length > 1 ? 's' : ''} ${commonThemes.map(t => THEMES[t]).join(' y ')}`);
+    return {
+      valid: sameFamily || commonThemes.length > 0,
+      reason: pieces.length ? `Conexión por ${pieces.join(' y por ')}.` : 'No comparte familia ni ejes con la carta central.',
+      commonThemes,
+      sameFamily
+    };
+  }
+
+  function topCard() { return state.discard[state.discard.length - 1]; }
+  function hasDrawable() { return !!state && (state.stock.length > 0 || state.discard.length > 1); }
+  function playableHand(playerIndex) { return state.players[playerIndex].hand.filter(isLegal); }
+  function isLegal(card) {
+    if (!state || state.phase !== 'playing') return false;
+    return state.dialogue || connection(card, topCard()).valid;
+  }
+
+  function beep(frequency=500, duration=.07, shape='sine') {
+    if (!soundEnabled) return;
+    try {
+      audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = shape;
+      osc.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      gain.gain.setValueAtTime(.035, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + duration);
+      osc.connect(gain); gain.connect(audioContext.destination);
+      osc.start(); osc.stop(audioContext.currentTime + duration);
+    } catch (_) {}
+  }
+
+  function clearTimers() {
+    window.clearTimeout(botTimer);
+    window.clearTimeout(toastTimer);
+  }
+
+  function showToast(message) {
+    ui.turnToast.textContent = message;
+    ui.turnToast.classList.add('show');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => ui.turnToast.classList.remove('show'), 2050);
+  }
+
+  function addLog(message, who='system') {
+    if (!state) return;
+    state.history.unshift({message, who});
+    state.history.length = Math.min(state.history.length, 10);
+    renderLog();
+  }
+
+  function renderLog() {
+    if (!state) return;
+    ui.eventLog.replaceChildren();
+    state.history.forEach((entry, index) => {
+      const row = document.createElement('div');
+      row.className = 'log-entry' + (index === 0 ? ' new' : '');
+      const strong = document.createElement('strong');
+      strong.textContent = `${entry.who === 'human' ? 'Tú' : entry.who === 'system' ? 'Mesa' : entry.who}: `;
+      row.append(strong, document.createTextNode(entry.message));
+      ui.eventLog.appendChild(row);
+    });
+  }
+
+  function drawFromStock() {
+    if (!state.stock.length && state.discard.length > 1) {
+      const retained = state.discard.pop();
+      state.stock = shuffle(state.discard);
+      state.discard = [retained];
+      addLog(`Se barajaron ${state.stock.length} cartas descartadas para reponer el mazo.`);
+    }
+    return state.stock.pop() || null;
+  }
+
+  function createCardElement(card, {interactive=false, center=false, index=-1, canPlay=false} = {}) {
+    const el = document.createElement(interactive ? 'button' : 'div');
+    const family = FAMILIES[card.family];
+    el.className = 'playing-card ' + (interactive ? (state.turn !== 0 || state.phase !== 'playing' ? 'inactive' : canPlay ? 'can-play' : 'cannot-play') : '');
+    if (interactive && state.dialogue && canPlay) el.classList.add('dialogue-allowed');
+    el.style.setProperty('--card-accent', family.color);
+    el.innerHTML = `<div class="card-corner"><span>${family.symbol}</span><span class="card-ref">${card.reference}</span></div><div class="card-icon" aria-hidden="true">${family.symbol}</div><div class="card-bottom"><span class="card-family">${family.short}</span><span class="card-name">${card.title}</span><div class="card-tags">${card.tags.map(t => `<span>${THEMES[t]}</span>`).join('')}</div></div>`;
+    el.title = `${card.title}\n${card.description}\n${card.reference}`;
+    if (interactive) {
+      el.type = 'button';
+      el.disabled = state.turn !== 0 || state.phase !== 'playing' || !canPlay;
+      el.setAttribute('aria-label', `Carta ${index + 1}: ${card.title}, ${FAMILIES[card.family].name}, ${card.tags.map(t => THEMES[t]).join(' y ')}. ${canPlay ? 'Jugable' : 'No jugable'}.`);
+      el.addEventListener('click', () => playHumanCard(card.id));
+      el.addEventListener('mouseenter', () => describeConnection(card));
+      el.addEventListener('focus', () => describeConnection(card));
+      el.addEventListener('mouseleave', () => renderRelation());
+      el.addEventListener('blur', () => renderRelation());
+    } else if (center) {
+      el.setAttribute('aria-label', `Carta central: ${card.title}`);
+    }
+    return el;
+  }
+
+  function describeConnection(card) {
+    if (!state || state.phase !== 'playing') return;
+    const rel = connection(card, topCard());
+    ui.relationInfo.replaceChildren();
+    const label = document.createElement('strong');
+    label.textContent = card.title + '. ';
+    const desc = document.createElement('span');
+    desc.textContent = state.dialogue ? 'Diálogo abierto: esta carta puede jugarse libremente.' : rel.reason;
+    ui.relationInfo.append(label, desc);
+    const explain = document.createElement('div');
+    explain.style.cssText = 'margin-top:8px;color:#8eaaa2;font-size:12px';
+    explain.textContent = card.description;
+    ui.relationInfo.appendChild(explain);
+  }
+
+  function renderRelation() {
+    if (!state) return;
+    const active = topCard();
+    if (state.dialogue) {
+      ui.relationInfo.innerHTML = '<strong class="match-token">DIÁLOGO ABIERTO</strong><div>Todos pasaron y no hay cartas para robar. La próxima jugada puede ser de cualquier familia o eje.</div>';
+      return;
+    }
+    const legal = state.turn === 0 ? playableHand(0) : [];
+    ui.relationInfo.innerHTML = `La carta <strong class="match-token">${active.title}</strong> pertenece a <strong>${FAMILIES[active.family].name}</strong>. Puedes unir cartas de esa familia o con los ejes <strong class="match-token">${active.tags.map(t => THEMES[t]).join(' / ')}</strong>.${state.turn === 0 ? `<div style="margin-top:7px">Cartas jugables en tu mano: <strong>${legal.length}</strong></div>` : ''}<div class="civic-fact"><span>${active.reference} · ¿Sabías que…?</span><p>${active.description}</p></div>`;
+  }
+
+  function renderMission() {
+    if (!state) return;
+    const active = topCard();
+    const family = FAMILIES[active.family];
+    const humanTurn = state.turn === 0;
+    ui.storyTitle.textContent = state.dialogue ? 'Ronda de diálogo' : `En juego: ${family.name}`;
+    ui.storyText.textContent = state.dialogue ? 'La mesa se atascó y abrió un espacio de diálogo. La siguiente jugada puede ser libre para destrabar la partida.' : STORY_BY_FAMILY[active.family];
+    ui.objectiveTitle.textContent = humanTurn ? 'Tu siguiente objetivo' : `Analizando a ${state.players[state.turn].name}`;
+    if (state.phase === 'ended') {
+      ui.objectiveHint.textContent = 'La partida terminó. Puedes iniciar otra para explorar nuevas conexiones entre conceptos de Constitución y Democracia.';
+    } else if (humanTurn) {
+      const count = playableHand(0).length;
+      ui.objectiveHint.textContent = state.dialogue ? 'Aprovecha la ronda de diálogo para jugar cualquier carta y reactivar la mesa.' : count ? `Busca una carta de la familia ${family.name} o que comparta ${active.tags.map(t => THEMES[t]).join(' / ')}. Tienes ${count} opción${count === 1 ? '' : 'es'} disponible${count === 1 ? '' : 's'}.` : 'No tienes una carta compatible. Debes robar una carta del mazo para continuar.';
+    } else {
+      ui.objectiveHint.textContent = `${state.players[state.turn].name} ${state.players[state.turn].persona || 'está pensando su jugada'} Ahora la carta central exige relaciones con ${active.tags.map(t => THEMES[t]).join(' y ')}.`;
+    }
+  }
+
+  function renderOpponents() {
+    ui.opponents.replaceChildren();
+    if (!state) return;
+    for (let i = 1; i < state.players.length; i++) {
+      const bot = state.players[i];
+      const seat = document.createElement('div');
+      seat.className = 'bot-seat' + (state.turn === i ? ' active thinking' : '');
+      seat.innerHTML = `<div class="bot-character">${window.DemocartasAvatars.avatar(bot.face)}</div><div class="bot-title">${bot.name}<span>${bot.subtitle}</span></div><span class="bot-count" aria-label="${bot.hand.length} cartas">${bot.hand.length}</span>`;
+      ui.opponents.appendChild(seat);
+    }
+  }
+
+  function renderHand() {
+    ui.playerHand.replaceChildren();
+    if (!state) return;
+    const hand = state.players[0].hand;
+    hand.forEach((card, i) => {
+      const playable = isLegal(card);
+      const el = createCardElement(card, {interactive:true, index:i, canPlay:playable});
+      const offset = i - (hand.length - 1) / 2;
+      el.style.setProperty('--fanR', `${Math.max(-20, Math.min(20, offset * 5))}deg`);
+      el.style.setProperty('--fanY', `${Math.min(20, Math.abs(offset) * 5)}px`);
+      el.style.zIndex = String(i + 1);
+      ui.playerHand.appendChild(el);
+    });
+    ui.handCount.textContent = `${hand.length} carta${hand.length === 1 ? '' : 's'}`;
+    if (state.phase === 'ended') {
+      ui.turnLabel.textContent = 'Partida finalizada';
+      ui.handCaption.textContent = 'Puedes iniciar otra partida';
+    } else if (state.turn === 0) {
+      ui.turnLabel.textContent = state.dialogue ? '¡Tu turno de diálogo!' : '¡Es tu turno!';
+      ui.handCaption.textContent = playableHand(0).length ? 'Elige una carta iluminada' : 'Sin conexión: roba del mazo';
+    } else {
+      ui.turnLabel.textContent = 'Tu mano';
+      ui.handCaption.textContent = `Es el turno de ${state.players[state.turn].name}`;
+    }
+  }
+
+  function renderTable() {
+    if (!state) return;
+    ui.playedStack.replaceChildren(createCardElement(topCard(), {center:true}));
+    ui.deckCount.textContent = String(state.stock.length);
+    const humanTurn = state.phase === 'playing' && state.turn === 0;
+    const needsDraw = humanTurn && playableHand(0).length === 0;
+    ui.drawPile.disabled = !needsDraw;
+    ui.drawPile.classList.toggle('available', needsDraw);
+    ui.drawPile.setAttribute('aria-label', hasDrawable() ? 'Robar una carta del mazo' : 'Pasar turno sin cartas disponibles');
+    ui.deckHint.textContent = needsDraw ? (hasDrawable() ? '¡Debes robar una carta!' : 'Mazo vacío: pasar turno') : hasDrawable() ? 'Roba si no tienes jugada' : 'Mazo agotado';
+    ui.stockNumber.textContent = state.stock.length;
+    ui.roundNumber.textContent = state.round;
+    ui.playersNumber.textContent = state.players.length;
+  }
+
+  function renderSidebar() {
+    if (!state) return;
+    const humanTurn = state.turn === 0;
+    if (state.phase === 'ended') {
+      ui.phaseTitle.textContent = 'Partida terminada';
+      ui.phaseText.textContent = 'La mesa ya eligió una persona ganadora.';
+    } else if (humanTurn) {
+      const available = playableHand(0).length;
+      ui.phaseTitle.textContent = state.dialogue ? 'Diálogo abierto' : available ? 'Tu decisión importa' : '¡Es hora de robar!';
+      ui.phaseText.textContent = state.dialogue ? 'Ninguna carta pudo continuar la ronda: ahora puedes jugar cualquiera.' : available ? `Tienes ${available} carta${available === 1 ? '' : 's'} compatible${available === 1 ? '' : 's'}. Las cartas luminosas se pueden jugar.` : 'Ninguna carta de tu mano coincide. Pulsa el mazo para tomar una y terminar tu turno.';
+    } else {
+      ui.phaseTitle.textContent = `Juega ${state.players[state.turn].name}`;
+      ui.phaseText.textContent = 'El rival está buscando una conexión temática válida.';
+    }
+    renderRelation();
+    renderMission();
+  }
+
+  function render() {
+    if (!state) return;
+    renderOpponents();
+    renderTable();
+    renderHand();
+    renderSidebar();
+    renderLog();
+    ui.gameStatus.textContent = state.phase === 'ended' ? 'Fin de partida' : state.turn === 0 ? 'Tu jugada puede cambiar la mesa.' : 'La IA está jugando…';
+  }
+
+  function playHumanCard(id) {
+    if (!state || state.phase !== 'playing' || state.turn !== 0) return;
+    const hand = state.players[0].hand;
+    const idx = hand.findIndex(c => c.id === id);
+    if (idx < 0) return;
+    if (!isLegal(hand[idx])) { showToast('Esta carta no comparte familia ni ejes.'); beep(180, .11); return; }
+    playCard(0, idx);
+  }
+
+  function playCard(playerIndex, handIndex) {
+    if (!state || state.phase !== 'playing' || state.turn !== playerIndex) return;
+    const player = state.players[playerIndex];
+    const card = player.hand[handIndex];
+    if (!card || !isLegal(card)) return;
+    const rel = state.dialogue ? {reason:'Diálogo: conexión libre para desbloquear la mesa.'} : connection(card, topCard());
+    player.hand.splice(handIndex, 1);
+    state.discard.push(card);
+    state.dialogue = false;
+    state.consecutiveNoDrawPasses = 0;
+    state.moves++;
+    addLog(`jugó «${card.title}». ${rel.reason}`, playerIndex === 0 ? 'human' : player.name);
+    beep(playerIndex === 0 ? 550 : 400, .1, 'triangle');
+    render();
+    showToast(`${playerIndex === 0 ? 'Tú' : player.name}: ${card.title}`);
+    if (player.hand.length === 0) { endGame(playerIndex); return; }
+    advanceTurn();
+  }
+
+  function drawTurn(playerIndex) {
+    if (!state || state.phase !== 'playing' || state.turn !== playerIndex) return;
+    if (playableHand(playerIndex).length > 0) return;
+    const player = state.players[playerIndex];
+    const drawn = drawFromStock();
+    if (drawn) {
+      player.hand.push(drawn);
+      state.consecutiveNoDrawPasses = 0;
+      addLog('no tenía conexión y robó una carta.', playerIndex === 0 ? 'human' : player.name);
+      showToast(playerIndex === 0 ? 'Robaste una carta. Termina tu turno.' : `${player.name} roba una carta.`);
+      beep(250, .09);
+    } else {
+      state.consecutiveNoDrawPasses++;
+      addLog('no tenía conexión ni cartas para robar; pasó.', playerIndex === 0 ? 'human' : player.name);
+      showToast(`${playerIndex === 0 ? 'Tú' : player.name} pasa: no hay cartas para robar.`);
+      if (state.consecutiveNoDrawPasses >= state.players.length) {
+        state.dialogue = true;
+        state.consecutiveNoDrawPasses = 0;
+        addLog('¡Diálogo abierto! El siguiente jugador podrá poner cualquier carta para destrabar la mesa.');
+      }
+    }
+    render();
+    advanceTurn();
+  }
+
+  function selectBotCard(playerIndex) {
+    const hand = state.players[playerIndex].hand;
+    const legalIndexes = hand.map((c, i) => isLegal(c) ? i : -1).filter(i => i >= 0);
+    if (!legalIndexes.length) return -1;
+    const scored = legalIndexes.map(i => {
+      const chosen = hand[i];
+      const future = hand.filter((c, j) => j !== i && connection(c, chosen).valid).length;
+      const crossFamily = hand.filter((c, j) => j !== i && c.family !== chosen.family && connection(c, chosen).valid).length;
+      const sameThemeAsTop = connection(chosen, topCard()).commonThemes.length;
+      return {i, score: future * 2 + crossFamily + sameThemeAsTop * 1.6 + .15 * Math.random()};
+    });
+    scored.sort((a, b) => b.score - a.score);
+    return scored[0].i;
+  }
+
+  function scheduleBot() {
+    window.clearTimeout(botTimer);
+    if (!state || state.phase !== 'playing' || state.turn === 0) return;
+    const current = state.turn;
+    botTimer = window.setTimeout(() => {
+      if (!state || state.phase !== 'playing' || state.turn !== current) return;
+      const selected = selectBotCard(current);
+      if (selected >= 0) playCard(current, selected);
+      else drawTurn(current);
+    }, 900 + Math.random() * 600);
+  }
+
+  function advanceTurn() {
+    if (!state || state.phase !== 'playing') return;
+    state.turn = (state.turn + 1) % state.players.length;
+    if (state.turn === 0) state.round++;
+    render();
+    if (state.turn === 0) {
+      showToast(state.dialogue ? '¡Diálogo abierto! Juega cualquier carta.' : '¡Es tu turno!');
+      beep(690, .08);
+    } else {
+      scheduleBot();
+    }
+  }
+
+  function endGame(winnerIndex) {
+    state.phase = 'ended';
+    clearTimers();
+    render();
+    const player = state.players[winnerIndex];
+    const won = winnerIndex === 0;
+    ui.endEyebrow.textContent = won ? '¡UNA MESA BIEN JUGADA!' : 'FIN DE PARTIDA';
+    ui.endTitle.textContent = won ? '¡Ganaste la partida!' : `${player.name} ha ganado`;
+    ui.endMessage.textContent = won ? 'Conectaste conceptos de nuestra democracia y te quedaste sin cartas.' : `${player.name} fue la primera persona en quedarse sin cartas. ¡Puedes volver a intentarlo!`;
+    ui.endStats.textContent = `${state.moves} jugadas · ${state.round} ronda${state.round === 1 ? '' : 's'} · ${state.players.length} participantes`;
+    ui.endOverlay.classList.remove('hidden');
+    beep(won ? 800 : 240, .24, 'triangle');
+  }
+
+  function startGame(count) {
+    clearTimers();
+    const players = [{name:'Tú', hand:[], isHuman:true}, ...BOTS.slice(0, count - 1).map(b => ({...b, hand:[], isHuman:false}))];
+    const stock = shuffle(CARD_LIBRARY);
+    for (let round = 0; round < 6; round++) for (const p of players) p.hand.push(stock.pop());
+    const first = stock.pop();
+    state = {players, stock, discard:[first], turn:0, round:1, moves:0, dialogue:false, consecutiveNoDrawPasses:0, history:[], phase:'playing'};
+    ui.startOverlay.classList.add('hidden');
+    ui.endOverlay.classList.add('hidden');
+    addLog(`comienza una partida con ${players.length} participantes. Carta inicial: «${first.title}».`);
+    render();
+    showToast('¡Bienvenido a la mesa!');
+    beep(620, .12);
+  }
+
+  function openOverlay(name) { ui[name].classList.remove('hidden'); }
+  function closeOverlay(name) { ui[name].classList.add('hidden'); }
+
+  ui.playerCountOptions.addEventListener('click', e => {
+    const option = e.target.closest('button[data-count]');
+    if (!option) return;
+    selectedCount = Number(option.dataset.count);
+    ui.playerCountOptions.querySelectorAll('button').forEach(btn => btn.classList.toggle('selected', Number(btn.dataset.count) === selectedCount));
+    ui.botsLabel.textContent = String(selectedCount - 1);
+    beep(460, .05);
+  });
+
+  ui.startBtn.addEventListener('click', () => startGame(selectedCount));
+  ui.againBtn.addEventListener('click', () => startGame(selectedCount));
+  ui.restartBtn.addEventListener('click', () => {
+    clearTimers();
+    state = null;
+    closeOverlay('endOverlay');
+    closeOverlay('rulesOverlay');
+    closeOverlay('sourcesOverlay');
+    openOverlay('startOverlay');
+  });
+  ui.drawPile.addEventListener('click', () => drawTurn(0));
+  ui.rulesToggle.addEventListener('click', () => openOverlay('rulesOverlay'));
+  ui.sourcesBtn.addEventListener('click', () => openOverlay('sourcesOverlay'));
+  ui.soundToggle.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    ui.soundToggle.setAttribute('aria-pressed', String(soundEnabled));
+    ui.soundToggle.textContent = soundEnabled ? '♪' : '♩';
+    if (soundEnabled) beep(660, .07);
+  });
+  document.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => closeOverlay(el.dataset.close)));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeOverlay('rulesOverlay'); closeOverlay('sourcesOverlay'); return; }
+    if (!state || state.phase !== 'playing' || state.turn !== 0 || !ui.rulesOverlay.classList.contains('hidden') || !ui.sourcesOverlay.classList.contains('hidden')) return;
+    if (e.key.toLowerCase() === 'r') { e.preventDefault(); drawTurn(0); return; }
+    if (/^[1-9]$/.test(e.key)) {
+      const index = Number(e.key) - 1;
+      const card = state.players[0].hand[index];
+      if (card) { e.preventDefault(); playHumanCard(card.id); }
+    }
+  });
+
+  ui.familyLegend.innerHTML = Object.entries(FAMILIES).map(([key, meta]) => `<span><i style="background:${meta.color}"></i>${meta.name}</span>`).join('');
+  ui.themeLegend.innerHTML = ['Participación','Justicia','Representación','Control','Igualdad','Libertad'].map(t => `<span>${t}</span>`).join('');
+
+  window.Democartas = {
+    getState: () => state && ({
+      turn: state.turn,
+      phase: state.phase,
+      hand: state.players[0].hand.map(c => c.id),
+      handLengths: state.players.map(p => p.hand.length),
+      stockLength: state.stock.length,
+      top: topCard().id,
+      dialogue: state.dialogue,
+      history: state.history.length
+    }),
+    connection
+  };
+})();
+</script></body>
+</html>
